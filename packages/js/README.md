@@ -1,23 +1,23 @@
-# Matomo Tracker (JavaScript)
+# Piwik Pro Tracker (JavaScript)
 
 Stand alone library for using Matamo tracking in frontend projects
 
 ## Installation
 
 ```sh
-npm install @jonkoops/matomo-tracker
+npm install @amsterdam/piwik-tracker
 ```
 
 ## Usage
 
-Before you're able to use this Matomo Tracker you need to initialize Matomo with your project specific details.
+Before you're able to use this Piwik Pro Tracker you need to initialize Piwik with your project specific details.
 
 **Initialize:**
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   urlBase: 'https://LINK.TO.DOMAIN',
   siteId: 3,
   userId: 'UID76903202', // optional, default value: `undefined`.
@@ -41,9 +41,9 @@ const tracker = new MatomoTracker({
 After initialization you can use the Matomo Tracker to track events and page views like this:
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   /* setup */
 })
 
@@ -66,9 +66,9 @@ tracker.trackLink({
 By default the Matomo Tracker will send the window's document title and location, but you're able to send your own values. Also, [custom dimensions](https://matomo.org/docs/custom-dimensions/) can be used:
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   /* setup */
 })
 
@@ -107,9 +107,9 @@ tracker.trackLink({
 Next to the tracking of events, this project also supports tracking site searches:
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   /* setup */
 })
 
@@ -145,9 +145,9 @@ Or if you want to stay away from inline JavaScript events, this project can be u
 ```
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   /* setup */
 })
 

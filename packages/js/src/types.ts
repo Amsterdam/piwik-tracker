@@ -47,31 +47,3 @@ export interface TrackSiteSearchParams extends TrackPageViewParams {
   category?: string
   count?: number
 }
-
-export interface TrackEcommerceOrderParams {
-  orderId: string
-  orderRevenue: number
-  orderSubTotal?: number
-  taxAmount?: number
-  shippingAmount?: number
-  discountOffered?: boolean
-}
-
-export interface AddEcommerceItemParams {
-  sku: string
-  productName?: string
-  productCategory?: string
-  productPrice?: number
-  productQuantity?: number
-}
-
-export interface RemoveEcommerceItemParams {
-  sku: string
-}
-
-export interface SetEcommerceViewParams {
-  sku: string | boolean
-  productName?: string | boolean
-  productCategory?: string
-  productPrice?: number
-}

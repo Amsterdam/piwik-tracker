@@ -1,13 +1,13 @@
-import MatomoTracker from './MatomoTracker'
+import PiwikTracker from './PiwikTracker'
 import { UserOptions } from './types'
 
 const URL_BASE = 'https://example.com'
 
-describe('MatomoTracker', () => {
+describe('PiwikTracker', () => {
   it('should build the window._paq correctly on initialisation', () => {
     window._paq = []
     // eslint-disable-next-line no-new
-    new MatomoTracker({
+    new PiwikTracker({
       siteId: 1,
       urlBase: 'https://foo.bar',
       configurations: { setCustomDimension: [1, 'someValue'], foo: 'bar' },
@@ -23,18 +23,18 @@ describe('MatomoTracker', () => {
   })
 
   it('throws an error if no urlBase is passed in options', () => {
-    expect(() => new MatomoTracker({ siteId: 1 } as UserOptions)).toThrow()
+    expect(() => new PiwikTracker({ siteId: 1 } as UserOptions)).toThrow()
   })
 
   it('throws an error if no siteId is passed in options', () => {
     expect(
-      () => new MatomoTracker({ urlBase: URL_BASE } as UserOptions),
+      () => new PiwikTracker({ urlBase: URL_BASE } as UserOptions),
     ).toThrow()
   })
 
   describe('pushInstruction', () => {
     it('should push the instruction', () => {
-      const matomo = new MatomoTracker({
+      const matomo = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: 1,
       })

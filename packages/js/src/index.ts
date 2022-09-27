@@ -1,4 +1,4 @@
-import MatomoTracker from './MatomoTracker'
+import PiwikTracker from './PiwikTracker'
 import * as types from './types'
 
 declare global {
@@ -7,6 +7,6 @@ declare global {
   }
 }
 
-export default MatomoTracker
+export default PiwikTracker
 
 export { types }

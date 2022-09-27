@@ -1,19 +1,18 @@
 {
-  "name": "@jonkoops/matomo-tracker",
-  "version": "0.7.0",
-  "description": "Matomo tracker for frontend projects",
+  "name": "@amsterdam/piwik-tracker",
+  "version": "1.0.0",
+  "description": "Piwik pro tracker for frontend projects",
   "main": "lib/index.js",
   "module": "es/index.js",
   "license": "MPL-2.0",
-  "author": "Jon Koops",
-  "homepage": "https://github.com/jonkoops/matomo-tracker#readme",
+  "homepage": "https://github.com/Amsterdam/piwik-tracker#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jonkoops/matomo-tracker.git",
+    "url": "git+https://github.com/Amsterdam/piwik-tracker.git",
     "directory": "packages/js"
   },
   "bugs": {
-    "url": "https://github.com/jonkoops/matomo-tracker/issues"
+    "url": "https://github.com/Amsterdam/piwik-tracker/issues"
   },
   "files": [
     "lib",
@@ -23,11 +22,8 @@
   ],
   "sideEffects": false,
   "contributors": [
-    "Chris van Mook <chrisvanmook@gmail.com>",
-    "Jon Koops <jonkoops@gmail.com>"
   ],
   "keywords": [
-    "matomo",
     "piwik",
     "tracking",
     "analytics",
