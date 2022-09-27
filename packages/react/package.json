@@ -1,7 +1,7 @@
 {
   "name": "@amsterdam/piwik-tracker-react",
   "version": "1.0.0",
-  "description": "Matomo tracker for react projects",
+  "description": "Piwik tracker for React projects",
   "main": "lib/index.js",
   "module": "es/index.js",
   "license": "MPL-2.0",
@@ -31,7 +31,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@Amsterdam/piwik-tracker": "^1.0.0"
+    "@amsterdam/piwik-tracker": "^1.0.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.0"

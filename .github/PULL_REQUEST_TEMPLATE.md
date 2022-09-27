@@ -1,4 +1,4 @@
-## Matomo tracker pull request
+## Piwik tracker pull request
 
 Before opening a pull request, please ensure:
 

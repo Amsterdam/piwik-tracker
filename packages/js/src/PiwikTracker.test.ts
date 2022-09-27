@@ -13,7 +13,7 @@ describe('PiwikTracker', () => {
       configurations: { setCustomDimension: [1, 'someValue'], foo: 'bar' },
     })
     expect(window._paq).toEqual([
-      ['setTrackerUrl', 'https://foo.bar/matomo.php'],
+      ['setTrackerUrl', 'https://foo.bar/ppms.php'],
       ['setSiteId', 1],
       ['setCustomDimension', 1, 'someValue'],
       ['foo', 'bar'],
@@ -34,13 +34,13 @@ describe('PiwikTracker', () => {
 
   describe('pushInstruction', () => {
     it('should push the instruction', () => {
-      const matomo = new PiwikTracker({
+      const piwik = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: 1,
       })
 
       window._paq = []
-      matomo.pushInstruction('foo', 'bar', 1)
+      piwik.pushInstruction('foo', 'bar', 1)
 
       expect(window._paq).toEqual([['foo', 'bar', 1]])
     })

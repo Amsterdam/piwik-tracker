@@ -1,55 +1,57 @@
-# Matomo Tracker (React)
+# Piwik Tracker (React)
 
-Stand alone library for using Matamo tracking in React projects
+Stand alone library for using Piwik tracking in React projects
 
 ## Installation
 
 ```sh
-npm install @jonkoops/matomo-tracker-react
+npm install @amsterdam/piwik-tracker-react
 ```
 
 ## Usage
 
-Before you're able to use this Matomo Tracker you need to create a Matomo instance with your project specific details, and wrap your application with the `MatomoProvider` that this package exposes.
+Before you're able to use this Piwik Tracker you need to create a Piwik instance with your project specific details, and wrap your application with the `PiwikProvider` that this package exposes.
 
 ```tsx
-import { MatomoProvider, createInstance } from '@jonkoops/matomo-tracker-react'
+import { PiwikProvider, createInstance } from '@amsterdam/piwik-tracker-react'
 
 const instance = createInstance({
   urlBase: 'https://LINK.TO.DOMAIN',
   siteId: 3,
   userId: 'UID76903202', // optional, default value: `undefined`.
-  trackerUrl: 'https://LINK.TO.DOMAIN/tracking.php', // optional, default value: `${urlBase}matomo.php`
-  srcUrl: 'https://LINK.TO.DOMAIN/tracking.js', // optional, default value: `${urlBase}matomo.js`
+  trackerUrl: 'https://LINK.TO.DOMAIN/ppms.php', // optional, default value: `${urlBase}ppms.php`
+  srcUrl: 'https://LINK.TO.DOMAIN/piwik.js', // optional, default value: `${urlBase}piwik.js`
   disabled: false, // optional, false by default. Makes all tracking calls no-ops if set to true.
-  heartBeat: { // optional, enabled by default
+  heartBeat: {
+    // optional, enabled by default
     active: true, // optional, default value: true
-    seconds: 10 // optional, default value: `15
+    seconds: 10, // optional, default value: `15
   },
   linkTracking: false, // optional, default value: true
-  configurations: { // optional, default value: {}
-    // any valid matomo configuration, all below are optional
+  configurations: {
+    // optional, default value: {}
+    // any valid Piwik configuration, all below are optional
     disableCookies: true,
     setSecureCookie: true,
-    setRequestMethod: 'POST'
-  }
+    setRequestMethod: 'POST',
+  },
 })
 
 ReactDOM.render(
-  <MatomoProvider value={instance}>
+  <PiwikProvider value={instance}>
     <MyApp />
-  </MatomoProvider>,
+  </PiwikProvider>,
 )
 ```
 
-After wrapping your application with the `MatomoProvider` you can use the `useMatomo` hook to track your application from anywhere within the MatomoProvider component tree:
+After wrapping your application with the `PiwikProvider` you can use the `usePiwik` hook to track your application from anywhere within the PiwikProvider component tree:
 
 ```tsx
 import React from 'react'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import { usePiwik } from '@amsterdam/piwik-tracker-react'
 
 const MyPage = () => {
-  const { trackPageView, trackEvent } = useMatomo()
+  const { trackPageView, trackEvent } = usePiwik()
 
   // Track page view
   React.useEffect(() => {
@@ -71,14 +73,14 @@ const MyPage = () => {
 
 ## Advanced usage
 
-By default the Matomo Tracker will send the window's document title and location, or send your own values. Also, [custom dimensions](https://matomo.org/docs/custom-dimensions/) can be used:
+By default the Piwik Tracker will send the window's document title and location, or send your own values. Also, [custom dimensions](https://help.piwik.pro/support/reports/custom-dimension/) can be used:
 
 ```tsx
 import React from 'react'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import { usePiwik } from '@amsterdam/piwik-tracker-react'
 
 const MyPage = () => {
-  const { trackPageView, trackEvent } = useMatomo()
+  const { trackPageView, trackEvent } = usePiwik()
 
   // Track page view
   React.useEffect(() => {
@@ -111,10 +113,10 @@ And you can do the same for the `trackEvent` method:
 
 ```tsx
 import React from 'react'
-import { useMatomo } from '@jonkoops/matomo-tracker-react'
+import { usePiwik } from '@amsterdam/piwik-tracker-react'
 
 const MyPage = () => {
-  const { trackEvent } = useMatomo()
+  const { trackEvent } = usePiwik()
 
   const handleOnClick = () => {
     // Track click on button
@@ -142,27 +144,26 @@ const MyPage = () => {
 }
 ```
 
-The `useMatomo` hook also exposes the following methods:
-* `trackEvents()`
-* `trackSiteSearch()`
-* `trackLink()`
-* `pushInstruction()`
+The `usePiwik` hook also exposes the following methods:
 
-For example, the `pushInstruction()` function can be used to push instructions to Matomo for execution. This
+- `trackSiteSearch()`
+- `trackLink()`
+- `pushInstruction()`
+
+For example, the `pushInstruction()` function can be used to push instructions to Piwik for execution. This
 is equivalent to pushing entries into the `_paq` array.
 
-
 ```javascript
-const { pushInstruction } = useMatomo();
-pushInstruction('setUserId', 'USER_ID_HERE');
+const { pushInstruction } = usePiwik()
+pushInstruction('setUserId', 'USER_ID_HERE')
 ```
 
 ## SPA Link Tracking
 
-Matomo provides the option to track outbound link, however, this implementation is flaky for a SPA (Single Page Application) **without** SSR (Server Side Rendering) across different versions of Matomo. Therefore you can use the `enableLinkTracking` method to listen to outbound clicks on anchor elements. This method should be placed on a component directly below your `MatomoProvider` on a component that's rendered on every page view. Also, make sure to disable the `linkTracking` option on the instance passed to the provider to prevent Matomo from catching some link clicks:
+Piwik provides the option to track outbound link, however, this implementation is flaky for a SPA (Single Page Application) **without** SSR (Server Side Rendering) across different versions of Piwik. Therefore you can use the `enableLinkTracking` method to listen to outbound clicks on anchor elements. This method should be placed on a component directly below your `PiwikProvider` on a component that's rendered on every page view. Also, make sure to disable the `linkTracking` option on the instance passed to the provider to prevent Piwik from catching some link clicks:
 
 ```tsx
-import { MatomoProvider, createInstance, useMatomo } from '@jonkoops/matomo-tracker-react'
+import { PiwikProvider, createInstance, usePiwik } from '@amsterdam/piwik-tracker-react'
 
 const instance = createInstance({
   urlBase: "https://LINK.TO.DOMAIN",
@@ -170,13 +171,13 @@ const instance = createInstance({
 });
 
 ReactDOM.render(
-  <MatomoProvider value={instance}>
+  <PiwikProvider value={instance}>
     <MyApp />
-  </MatomoProvider>
+  </PiwikProvider>
 )
 
 const MyApp = () => {
-  const { enableLinkTracking } = useMatomo()
+  const { enableLinkTracking } = usePiwik()
 
   enableLinkTracking()
 
@@ -189,4 +190,4 @@ const MyApp = () => {
 
 ## References
 
-- [Matomo JavaScript Tracking Guide](https://developer.matomo.org/guides/tracking-javascript-guide)
+- [Piwik JavaScript Tracking Guide](https://developers.piwik.pro/en/latest/data_collection/web/guides.html)

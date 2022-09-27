@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { MatomoInstance } from '../types'
+import { PiwikInstance } from '../types'
 
-const useOutboundClickListener = (matomoInstance: MatomoInstance): void => {
+const useOutboundClickListener = (instance: PiwikInstance): void => {
   const handleOutboundClick = (event: MouseEvent) => {
     // The target is not guaranteed to be a link, it could be a child element.
     // Look up the element's parent until the anchor element is found.
@@ -32,7 +32,7 @@ const useOutboundClickListener = (matomoInstance: MatomoInstance): void => {
         ),
       )
     ) {
-      matomoInstance.trackLink({ href })
+      instance.trackLink({ href })
     }
   }
 

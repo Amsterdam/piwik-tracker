@@ -1,12 +1,11 @@
-import MatomoTracker, { types } from '@jonkoops/matomo-tracker'
+import PiwikTracker, { types } from '@amsterdam/piwik-tracker'
 
-export interface MatomoInstance {
-  trackEvent: MatomoTracker['trackEvent']
-  trackEvents: MatomoTracker['trackEvents']
-  trackPageView: MatomoTracker['trackPageView']
-  trackSiteSearch: MatomoTracker['trackSiteSearch']
-  trackLink: MatomoTracker['trackLink']
-  pushInstruction: MatomoTracker['pushInstruction']
+export interface PiwikInstance {
+  trackEvent: PiwikTracker['trackEvent']
+  trackPageView: PiwikTracker['trackPageView']
+  trackSiteSearch: PiwikTracker['trackSiteSearch']
+  trackLink: PiwikTracker['trackLink']
+  pushInstruction: PiwikTracker['pushInstruction']
 }
 
 export type InstanceParams = types.UserOptions

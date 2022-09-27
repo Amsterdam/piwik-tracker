@@ -1,4 +1,4 @@
-export { default as MatomoContext } from './MatomoContext'
-export { default as MatomoProvider } from './MatomoProvider'
+export { default as PiwikContext } from './PiwikContext'
+export { default as PiwikProvider } from './PiwikProvider'
 export { default as createInstance } from './instance'
-export { default as useMatomo } from './useMatomo'
+export { default as usePiwik } from './usePiwik'
