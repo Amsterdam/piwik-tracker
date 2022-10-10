@@ -76,8 +76,8 @@ class PiwikTracker {
       this.enableHeartBeatTimer((heartBeat && heartBeat.seconds) ?? 15)
     }
 
-    // // measure outbound links and downloads
-    // // might not work accurately on SPAs because new links (dom elements) are created dynamically without a server-side page reload.
+    // measure outbound links and downloads
+    // might not work accurately on SPAs because new links (dom elements) are created dynamically without a server-side page reload.
     this.enableLinkTracking(linkTracking)
 
     const doc = document
