@@ -1,8 +1,8 @@
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 import { InstanceParams } from './types'
 
-function createInstance(params: InstanceParams): MatomoTracker {
-  return new MatomoTracker(params)
+function createInstance(params: InstanceParams): PiwikTracker {
+  return new PiwikTracker(params)
 }
 
 export default createInstance

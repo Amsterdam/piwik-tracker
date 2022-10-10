@@ -1,15 +1,15 @@
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 import { fireEvent, render, renderHook } from '@testing-library/react'
 import React from 'react'
 import createInstance from './instance'
-import MatomoProvider from './MatomoProvider'
-import useMatomo from './useMatomo'
+import PiwikProvider from './PiwikProvider'
+import usePiwik from './usePiwik'
 
-jest.mock('@jonkoops/matomo-tracker')
+jest.mock('@amsterdam/piwik-tracker')
 
-describe('useMatomo', () => {
-  const JustAComponent = function () {
-    const { trackPageView, trackEvent } = useMatomo()
+describe('usePiwik', () => {
+  function JustAComponent() {
+    const { trackPageView, trackEvent } = usePiwik()
 
     // Track page view after page load
     React.useEffect(() => {
@@ -31,13 +31,13 @@ describe('useMatomo', () => {
   it('should render, call trackPageView once and call trackEvent when clicking a button', () => {
     const trackEventMock = jest.fn()
     const trackPageViewMock = jest.fn()
-    const mockedMatomoTracker = jest.mocked(MatomoTracker)
-    mockedMatomoTracker.mockImplementation(
+    const mockedPiwikTracker = jest.mocked(PiwikTracker)
+    mockedPiwikTracker.mockImplementation(
       () =>
         ({
           trackEvent: trackEventMock,
           trackPageView: trackPageViewMock,
-        } as unknown as MatomoTracker),
+        } as unknown as PiwikTracker),
     )
 
     const instance = createInstance({
@@ -47,12 +47,12 @@ describe('useMatomo', () => {
 
     const Component = function () {
       return (
-        <MatomoProvider value={instance}>
+        <PiwikProvider value={instance}>
           <JustAComponent />
-        </MatomoProvider>
+        </PiwikProvider>
       )
     }
-    expect(MatomoTracker).toHaveBeenCalled()
+    expect(PiwikTracker).toHaveBeenCalled()
 
     const { getByTestId } = render(<Component />)
     expect(trackPageViewMock).toHaveBeenCalled()
@@ -66,14 +66,14 @@ describe('useMatomo', () => {
   })
 
   it('memoizes the methods between renders', () => {
-    const instance = new MatomoTracker({
+    const instance = new PiwikTracker({
       urlBase: 'https://LINK.TO.DOMAIN',
       siteId: 3, // optional, default value: `1`
     })
 
-    const { result, rerender } = renderHook(() => useMatomo(), {
+    const { result, rerender } = renderHook(() => usePiwik(), {
       wrapper: ({ children }) => (
-        <MatomoProvider value={instance}>{children}</MatomoProvider>
+        <PiwikProvider value={instance}>{children}</PiwikProvider>
       ),
     })
 

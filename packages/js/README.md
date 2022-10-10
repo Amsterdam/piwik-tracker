@@ -1,28 +1,28 @@
-# Matomo Tracker (JavaScript)
+# Piwik Pro Tracker (JavaScript)
 
-Stand alone library for using Matamo tracking in frontend projects
+Stand alone library for using Piwik tracking in frontend projects
 
 ## Installation
 
 ```sh
-npm install @jonkoops/matomo-tracker
+npm install @amsterdam/piwik-tracker
 ```
 
 ## Usage
 
-Before you're able to use this Matomo Tracker you need to initialize Matomo with your project specific details.
+Before you're able to use this Piwik Pro Tracker you need to initialize Piwik with your project specific details.
 
 **Initialize:**
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   urlBase: 'https://LINK.TO.DOMAIN',
   siteId: 3,
   userId: 'UID76903202', // optional, default value: `undefined`.
-  trackerUrl: 'https://LINK.TO.DOMAIN/tracking.php', // optional, default value: `${urlBase}matomo.php`
-  srcUrl: 'https://LINK.TO.DOMAIN/tracking.js', // optional, default value: `${urlBase}matomo.js`
+  trackerUrl: 'https://LINK.TO.DOMAIN/ppms.php', // optional, default value: `${urlBase}ppms.php`
+  srcUrl: 'https://LINK.TO.DOMAIN/piwik.js', // optional, default value: `${urlBase}piwik.js`
   disabled: false, // optional, false by default. Makes all tracking calls no-ops if set to true.
   heartBeat: { // optional, enabled by default
     active: true, // optional, default value: true
@@ -30,7 +30,7 @@ const tracker = new MatomoTracker({
   },
   linkTracking: false, // optional, default value: true
   configurations: { // optional, default value: {}
-    // any valid matomo configuration, all below are optional
+    // any valid Piwik configuration, all below are optional
     disableCookies: true,
     setSecureCookie: true,
     setRequestMethod: 'POST'
@@ -38,12 +38,12 @@ const tracker = new MatomoTracker({
 })
 ```
 
-After initialization you can use the Matomo Tracker to track events and page views like this:
+After initialization you can use the Piwik Tracker to track events and page views like this:
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   /* setup */
 })
 
@@ -63,12 +63,12 @@ tracker.trackLink({
 
 ## Advanced usage
 
-By default the Matomo Tracker will send the window's document title and location, but you're able to send your own values. Also, [custom dimensions](https://matomo.org/docs/custom-dimensions/) can be used:
+By default the Piwik Tracker will send the window's document title and location, but you're able to send your own values. Also, [custom dimensions](https://help.piwik.pro/support/reports/custom-dimension/) can be used:
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   /* setup */
 })
 
@@ -107,9 +107,9 @@ tracker.trackLink({
 Next to the tracking of events, this project also supports tracking site searches:
 
 ```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 
-const tracker = new MatomoTracker({
+const tracker = new PiwikTracker({
   /* setup */
 })
 
@@ -128,36 +128,6 @@ tracker.trackSiteSearch({
 })
 ```
 
-Or if you want to stay away from inline JavaScript events, this project can be used to track events from buttons with data attributes:
-
-**HTML5 data-attributes**
-
-```html
-<button
-  data-matomo-event="click"
-  data-matomo-category="sample-page"
-  data-matomo-action="click-event"
-  data-matomo-name="test" // optional
-  data-matomo-value="123" // optional, numerical value
-  type="button">
-  Track me!
-</button>
-```
-
-```ts
-import MatomoTracker from '@jonkoops/matomo-tracker'
-
-const tracker = new MatomoTracker({
-  /* setup */
-})
-
-// Load the event listeners
-tracker.trackEvents()
-
-// Track page views
-tracker.trackPageView()
-```
-
 ## References
 
-- [Matomo JavaScript Tracking Guide](https://developer.matomo.org/guides/tracking-javascript-guide)
+- [Piwik JavaScript Tracking Guide](https://developers.piwik.pro/en/latest/data_collection/web/guides.html)

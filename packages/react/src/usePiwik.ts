@@ -1,5 +1,5 @@
 import { useCallback, useContext } from 'react'
-import MatomoContext from './MatomoContext'
+import PiwikContext from './PiwikContext'
 import {
   TrackEventParams,
   TrackLinkParams,
@@ -8,8 +8,8 @@ import {
 } from './types'
 import useOutboundClickListener from './utils/useOutboundClickListener'
 
-function useMatomo() {
-  const instance = useContext(MatomoContext)
+function usePiwik() {
+  const instance = useContext(PiwikContext)
 
   const trackPageView = useCallback(
     (params?: TrackPageViewParams) => instance?.trackPageView(params),
@@ -20,8 +20,6 @@ function useMatomo() {
     (params: TrackEventParams) => instance?.trackEvent(params),
     [instance],
   )
-
-  const trackEvents = useCallback(() => instance?.trackEvents(), [instance])
 
   const trackSiteSearch = useCallback(
     (params: TrackSiteSearchParams) => instance?.trackSiteSearch(params),
@@ -49,7 +47,6 @@ function useMatomo() {
 
   return {
     trackEvent,
-    trackEvents,
     trackPageView,
     trackSiteSearch,
     trackLink,
@@ -58,4 +55,4 @@ function useMatomo() {
   }
 }
 
-export default useMatomo
+export default usePiwik
