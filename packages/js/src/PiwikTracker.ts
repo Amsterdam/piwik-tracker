@@ -1,4 +1,4 @@
-import { TRACK_TYPES } from './constants'
+import { CUSTOM_EVENTS, TRACK_TYPES } from './constants'
 import {
   CustomDimension,
   TrackEventParams,
@@ -6,6 +6,7 @@ import {
   TrackPageViewParams,
   TrackParams,
   TrackSiteSearchParams,
+  TrackSiteSearchResultClick,
   UserOptions,
 } from './types'
 
@@ -31,8 +32,6 @@ class PiwikTracker {
     srcUrl,
     disabled,
     heartBeat,
-    linkTracking = true,
-    configurations = {},
   }: UserOptions) {
     const normalizedUrlBase =
       urlBase[urlBase.length - 1] !== '/' ? `${urlBase}/` : urlBase
@@ -62,23 +61,10 @@ class PiwikTracker {
       this.pushInstruction('setUserId', userId)
     }
 
-    Object.entries(configurations).forEach(([name, instructions]) => {
-      if (instructions instanceof Array) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        this.pushInstruction(name, ...instructions)
-      } else {
-        this.pushInstruction(name, instructions)
-      }
-    })
-
     // accurately measure the time spent on the last pageview of a visit
     if (!heartBeat || (heartBeat && heartBeat.active)) {
       this.enableHeartBeatTimer((heartBeat && heartBeat.seconds) ?? 15)
     }
-
-    // measure outbound links and downloads
-    // might not work accurately on SPAs because new links (dom elements) are created dynamically without a server-side page reload.
-    this.enableLinkTracking(linkTracking)
 
     const doc = document
     const scriptElement = doc.createElement('script')
@@ -98,86 +84,126 @@ class PiwikTracker {
     this.pushInstruction('enableHeartBeatTimer', seconds)
   }
 
-  enableLinkTracking(active: boolean): void {
-    this.pushInstruction('enableLinkTracking', active)
-  }
-
   // Tracks events
   // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackEvent
-  trackEvent({
-    category,
-    action,
-    name,
-    value,
-    ...otherParams
-  }: TrackEventParams): void {
-    if (category && action) {
-      this.track({
-        data: [TRACK_TYPES.TRACK_EVENT, category, action, name, value],
-        ...otherParams,
+  // trackEvent({
+  //   category,
+  //   action,
+  //   name,
+  //   value,
+  //   ...otherParams
+  // }: TrackEventParams): void {
+  //   if (category && action) {
+  //     this.track({
+  //       data: [TRACK_TYPES.TRACK_EVENT, category, action, name, value],
+  //       ...otherParams,
+  //     })
+  //   } else {
+  //     throw new Error(`Error: category and action are required.`)
+  //   }
+  // }
+
+  // Tracks site search
+  trackSiteSearch({
+    keyword,
+    count,
+    type,
+    searchMachine,
+  }: TrackSiteSearchParams) {
+    if (keyword && keyword.length > 3) {
+      this.pushCustomInstruction({
+        event: CUSTOM_EVENTS.TRACK_SEARCH,
+        meta: {
+          search_term: keyword,
+          search_result_amount: count,
+          search_type: type,
+          search_machine: searchMachine,
+        },
       })
     } else {
-      throw new Error(`Error: category and action are required.`)
+      throw new Error('Error: keyword should atleast be three characters long.')
     }
   }
 
-  // Tracks site search
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackSiteSearch
-  trackSiteSearch({
+  trackSiteSearchResultClick({
     keyword,
-    category,
-    count,
-    ...otherParams
-  }: TrackSiteSearchParams): void {
-    if (keyword) {
-      this.track({
-        data: [TRACK_TYPES.TRACK_SEARCH, keyword, category, count],
-        ...otherParams,
-      })
-    } else {
-      throw new Error(`Error: keyword is required.`)
+    searchResult: { title, url, type: resultType, position },
+    amountOfResults,
+    amountOfResultsShown,
+    type,
+  }: TrackSiteSearchResultClick) {
+    if (keyword.length < 3) {
+      throw new Error('Error: keyword should be atleast three characters long.')
     }
+
+    let parsedUrl = url
+
+    if (parsedUrl.includes('?')) {
+      parsedUrl = parsedUrl.substring(0, parsedUrl.indexOf('?'))
+    }
+
+    this.pushCustomInstruction({
+      event: CUSTOM_EVENTS.TRACK_SEARCH_RESULT,
+      meta: {
+        search_term: keyword,
+        search_result_title: title,
+        search_result_url: parsedUrl,
+        search_result_type: resultType,
+        search_result_selected: position,
+        search_result_shown: amountOfResultsShown,
+        search_result_amount: amountOfResults,
+        search_type: type,
+      },
+    })
   }
 
   // Tracks outgoing links to other sites and downloads
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackLink
-  trackLink({ href, linkType = 'link' }: TrackLinkParams): void {
-    this.pushInstruction(TRACK_TYPES.TRACK_LINK, href, linkType)
+  trackLink({ href, linkTitle }: TrackLinkParams) {
+    this.pushCustomInstruction({
+      event: CUSTOM_EVENTS.TRACK_LINK,
+      meta: {
+        category: CUSTOM_EVENTS.TRACK_LINK,
+        action: `${linkTitle} - ${href}`,
+        label: window.location.pathname,
+      },
+    })
   }
 
   // Tracks page views
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackPageView
-  trackPageView(params?: TrackPageViewParams): void {
-    this.track({ data: [TRACK_TYPES.TRACK_VIEW], ...params })
+  trackPageView(params: TrackPageViewParams) {
+    this.pushCustomInstruction({
+      event: CUSTOM_EVENTS.TRACK_VIEW,
+      meta: { vpv_url: params.href },
+    })
   }
 
   // Sends the tracked page/view/search to Piwik
-  track({
-    data = [],
-    documentTitle = window.document.title,
-    href,
-    customDimensions = false,
-  }: TrackParams): void {
-    if (data.length) {
-      if (
-        customDimensions &&
-        Array.isArray(customDimensions) &&
-        customDimensions.length
-      ) {
-        customDimensions.map((customDimension: CustomDimension) =>
-          this.pushInstruction(
-            'setCustomDimensionValue',
-            customDimension.id,
-            customDimension.value,
-          ),
-        )
-      }
+  // track({
+  //   data = [],
+  //   documentTitle = window.document.title,
+  //   href,
+  //   customDimensions = false,
+  // }: TrackParams): void {
+  //   if (data.length) {
+  //     if (
+  //       customDimensions &&
+  //       Array.isArray(customDimensions) &&
+  //       customDimensions.length
+  //     ) {
+  //       customDimensions.map((customDimension: CustomDimension) =>
+  //         this.pushInstruction(
+  //           'setCustomDimensionValue',
+  //           customDimension.id,
+  //           customDimension.value,
+  //         ),
+  //       )
+  //     }
 
-      this.pushInstruction('setCustomUrl', href ?? window.location.href)
-      this.pushInstruction('setDocumentTitle', documentTitle)
-      this.pushInstruction(...(data as [string, ...any[]]))
-    }
-  }
+  //     this.pushInstruction('setCustomUrl', href ?? window.location.href)
+  //     this.pushInstruction('setDocumentTitle', documentTitle)
+  //     this.pushInstruction(...(data as [string, ...any[]]))
+  //   }
+  // }
 
   /**
    * Pushes an instruction to Piwik for execution, this is equivalent to pushing entries into the `_paq` array.
@@ -200,6 +226,15 @@ class PiwikTracker {
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line
       window._paq.push([name, ...args])
+    }
+
+    return this
+  }
+
+  pushCustomInstruction(instruction: Record<string, any>) {
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line
+      window._paq.push(instruction)
     }
 
     return this

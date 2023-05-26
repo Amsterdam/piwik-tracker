@@ -1,5 +1,5 @@
 export interface CustomDimension {
-  id: number
+  id: string
   value: string
 }
 
@@ -14,36 +14,34 @@ export interface UserOptions {
     active: boolean
     seconds?: number
   }
-  linkTracking?: boolean
-  configurations?: {
-    [key: string]: any
-  }
 }
 
-export interface TrackPageViewParams {
-  documentTitle?: string
-  href?: string | Location
-  customDimensions?: boolean | CustomDimension[]
+export interface TrackBaseParams {
+  customDimensions?: CustomDimension[]
 }
 
-export interface TrackParams extends TrackPageViewParams {
-  data: any[]
-}
-
-export interface TrackEventParams extends TrackPageViewParams {
-  category: string
-  action: string
-  name?: string
-  value?: number
-}
-
-export interface TrackLinkParams {
+export interface TrackLinkParams extends TrackBaseParams {
   href: string
   linkType?: 'download' | 'link'
+  linkTitle: string
 }
 
-export interface TrackSiteSearchParams extends TrackPageViewParams {
+export interface TrackSiteSearchParams extends TrackBaseParams {
   keyword: string
-  category?: string
+  searchMachine: string
   count?: number
+  type: 'autocomplete' | 'manueel'
+}
+
+export interface TrackSiteSearchResultClick extends TrackBaseParams {
+  keyword: string // de zoekopdracht van de gebruiker (minimaal drie karakters)
+  searchResult: {
+    title: string // de titel van het aangeklikt element
+    url: string // de url waarop wordt geklikt (zonder ? parameters)
+    type: string // het type van het zoekresultaat (bijv. persbericht of nieuwsbericht.)
+    position: number // het hoeveelste zoekresultaat wordt aangeklikt van boven
+  }
+  amountOfResults: number // aantal zoekresultaten op het moment
+  amountOfResultsShown: number // hoeveel zoekresultaten had de gebruiker beschikbaar om te kiezen
+  type: 'autocomplete' | 'manueel' // heeft iemand het zoekresultaat helemaal zelf getypt of via Autocomplete aangeklikt
 }
