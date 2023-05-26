@@ -4,11 +4,8 @@ export interface CustomDimension {
 }
 
 export interface UserOptions {
-  urlBase: string
-  siteId: number
-  userId?: string
-  trackerUrl?: string
-  srcUrl?: string
+  urlBase?: string
+  siteId: string
   disabled?: boolean
   heartBeat?: {
     active: boolean
@@ -18,6 +15,10 @@ export interface UserOptions {
 
 export interface TrackBaseParams {
   customDimensions?: CustomDimension[]
+}
+
+export interface TrackPageViewParams extends TrackBaseParams {
+  href: string
 }
 
 export interface TrackLinkParams extends TrackBaseParams {
@@ -44,4 +45,9 @@ export interface TrackSiteSearchResultClick extends TrackBaseParams {
   amountOfResults: number // aantal zoekresultaten op het moment
   amountOfResultsShown: number // hoeveel zoekresultaten had de gebruiker beschikbaar om te kiezen
   type: 'autocomplete' | 'manueel' // heeft iemand het zoekresultaat helemaal zelf getypt of via Autocomplete aangeklikt
+}
+
+export interface Instruction {
+  event: string
+  meta: Record<string, string | number>
 }

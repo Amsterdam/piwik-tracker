@@ -1,22 +1,17 @@
-import { CUSTOM_EVENTS, TRACK_TYPES } from './constants'
+import { CUSTOM_EVENTS } from './constants'
+import initializeDatalayer from './datalayer'
 import {
   CustomDimension,
-  TrackEventParams,
+  Instruction,
   TrackLinkParams,
   TrackPageViewParams,
-  TrackParams,
   TrackSiteSearchParams,
   TrackSiteSearchResultClick,
   UserOptions,
 } from './types'
 
 class PiwikTracker {
-  mutationObserver?: MutationObserver
-
   constructor(userOptions: UserOptions) {
-    if (!userOptions.urlBase) {
-      throw new Error('Piwik urlBase is required.')
-    }
     if (!userOptions.siteId) {
       throw new Error('Piwik siteId is required.')
     }
@@ -24,18 +19,7 @@ class PiwikTracker {
     this.initialize(userOptions)
   }
 
-  private initialize({
-    urlBase,
-    siteId,
-    userId,
-    trackerUrl,
-    srcUrl,
-    disabled,
-    heartBeat,
-  }: UserOptions) {
-    const normalizedUrlBase =
-      urlBase[urlBase.length - 1] !== '/' ? `${urlBase}/` : urlBase
-
+  private initialize({ urlBase, siteId, disabled, heartBeat }: UserOptions) {
     if (typeof window === 'undefined') {
       return
     }
@@ -50,58 +34,17 @@ class PiwikTracker {
       return
     }
 
-    this.pushInstruction(
-      'setTrackerUrl',
-      trackerUrl ?? `${normalizedUrlBase}ppms.php`,
-    )
-
-    this.pushInstruction('setSiteId', siteId)
-
-    if (userId) {
-      this.pushInstruction('setUserId', userId)
-    }
-
     // accurately measure the time spent on the last pageview of a visit
     if (!heartBeat || (heartBeat && heartBeat.active)) {
       this.enableHeartBeatTimer((heartBeat && heartBeat.seconds) ?? 15)
     }
 
-    const doc = document
-    const scriptElement = doc.createElement('script')
-    const scripts = doc.getElementsByTagName('script')[0]
-
-    scriptElement.type = 'text/javascript'
-    scriptElement.async = true
-    scriptElement.defer = true
-    scriptElement.src = srcUrl || `${normalizedUrlBase}piwik.js`
-
-    if (scripts && scripts.parentNode) {
-      scripts.parentNode.insertBefore(scriptElement, scripts)
-    }
+    initializeDatalayer(siteId, urlBase)
   }
 
   enableHeartBeatTimer(seconds: number): void {
     this.pushInstruction('enableHeartBeatTimer', seconds)
   }
-
-  // Tracks events
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackEvent
-  // trackEvent({
-  //   category,
-  //   action,
-  //   name,
-  //   value,
-  //   ...otherParams
-  // }: TrackEventParams): void {
-  //   if (category && action) {
-  //     this.track({
-  //       data: [TRACK_TYPES.TRACK_EVENT, category, action, name, value],
-  //       ...otherParams,
-  //     })
-  //   } else {
-  //     throw new Error(`Error: category and action are required.`)
-  //   }
-  // }
 
   // Tracks site search
   trackSiteSearch({
@@ -109,17 +52,21 @@ class PiwikTracker {
     count,
     type,
     searchMachine,
+    customDimensions,
   }: TrackSiteSearchParams) {
     if (keyword && keyword.length > 3) {
-      this.pushCustomInstruction({
-        event: CUSTOM_EVENTS.TRACK_SEARCH,
-        meta: {
-          search_term: keyword,
-          search_result_amount: count,
-          search_type: type,
-          search_machine: searchMachine,
+      this.pushCustomInstructionWithCustomDimensions(
+        {
+          event: CUSTOM_EVENTS.TRACK_SEARCH,
+          meta: {
+            search_term: keyword,
+            search_result_amount: count || 0,
+            search_type: type,
+            search_machine: searchMachine,
+          },
         },
-      })
+        customDimensions,
+      )
     } else {
       throw new Error('Error: keyword should atleast be three characters long.')
     }
@@ -131,6 +78,7 @@ class PiwikTracker {
     amountOfResults,
     amountOfResultsShown,
     type,
+    customDimensions,
   }: TrackSiteSearchResultClick) {
     if (keyword.length < 3) {
       throw new Error('Error: keyword should be atleast three characters long.')
@@ -142,68 +90,67 @@ class PiwikTracker {
       parsedUrl = parsedUrl.substring(0, parsedUrl.indexOf('?'))
     }
 
-    this.pushCustomInstruction({
-      event: CUSTOM_EVENTS.TRACK_SEARCH_RESULT,
-      meta: {
-        search_term: keyword,
-        search_result_title: title,
-        search_result_url: parsedUrl,
-        search_result_type: resultType,
-        search_result_selected: position,
-        search_result_shown: amountOfResultsShown,
-        search_result_amount: amountOfResults,
-        search_type: type,
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_SEARCH_RESULT,
+        meta: {
+          search_term: keyword,
+          search_result_title: title,
+          search_result_url: parsedUrl,
+          search_result_type: resultType,
+          search_result_selected: position,
+          search_result_shown: amountOfResultsShown,
+          search_result_amount: amountOfResults,
+          search_type: type,
+        },
       },
-    })
+      customDimensions,
+    )
   }
 
   // Tracks outgoing links to other sites and downloads
-  trackLink({ href, linkTitle }: TrackLinkParams) {
-    this.pushCustomInstruction({
-      event: CUSTOM_EVENTS.TRACK_LINK,
-      meta: {
-        category: CUSTOM_EVENTS.TRACK_LINK,
-        action: `${linkTitle} - ${href}`,
-        label: window.location.pathname,
+  trackLink({ href, linkTitle, customDimensions }: TrackLinkParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_LINK,
+        meta: {
+          category: CUSTOM_EVENTS.TRACK_LINK,
+          action: `${linkTitle} - ${href}`,
+          label: window.location.pathname,
+        },
       },
-    })
+      customDimensions,
+    )
   }
 
   // Tracks page views
   trackPageView(params: TrackPageViewParams) {
-    this.pushCustomInstruction({
-      event: CUSTOM_EVENTS.TRACK_VIEW,
-      meta: { vpv_url: params.href },
-    })
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_VIEW,
+        meta: { vpv_url: params.href },
+      },
+      params.customDimensions,
+    )
   }
 
-  // Sends the tracked page/view/search to Piwik
-  // track({
-  //   data = [],
-  //   documentTitle = window.document.title,
-  //   href,
-  //   customDimensions = false,
-  // }: TrackParams): void {
-  //   if (data.length) {
-  //     if (
-  //       customDimensions &&
-  //       Array.isArray(customDimensions) &&
-  //       customDimensions.length
-  //     ) {
-  //       customDimensions.map((customDimension: CustomDimension) =>
-  //         this.pushInstruction(
-  //           'setCustomDimensionValue',
-  //           customDimension.id,
-  //           customDimension.value,
-  //         ),
-  //       )
-  //     }
+  pushCustomInstructionWithCustomDimensions(
+    instruction: Instruction,
+    customDimensions: CustomDimension[] | undefined,
+  ) {
+    if (
+      customDimensions &&
+      Array.isArray(customDimensions) &&
+      customDimensions.length
+    ) {
+      customDimensions.forEach((customDimension: CustomDimension) => {
+        // eslint-disable-next-line no-param-reassign
+        instruction.meta[customDimension.id] = customDimension.value
+      })
+    }
 
-  //     this.pushInstruction('setCustomUrl', href ?? window.location.href)
-  //     this.pushInstruction('setDocumentTitle', documentTitle)
-  //     this.pushInstruction(...(data as [string, ...any[]]))
-  //   }
-  // }
+    this.pushCustomInstruction(instruction)
+  }
 
   /**
    * Pushes an instruction to Piwik for execution, this is equivalent to pushing entries into the `_paq` array.
@@ -231,7 +178,7 @@ class PiwikTracker {
     return this
   }
 
-  pushCustomInstruction(instruction: Record<string, any>) {
+  pushCustomInstruction(instruction: Instruction) {
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line
       window._paq.push(instruction)
