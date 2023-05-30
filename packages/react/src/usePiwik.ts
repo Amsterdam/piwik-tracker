@@ -1,7 +1,6 @@
 import { useCallback, useContext } from 'react'
 import PiwikContext from './PiwikContext'
 import {
-  TrackEventParams,
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
@@ -13,11 +12,6 @@ function usePiwik() {
 
   const trackPageView = useCallback(
     (params?: TrackPageViewParams) => instance?.trackPageView(params),
-    [instance],
-  )
-
-  const trackEvent = useCallback(
-    (params: TrackEventParams) => instance?.trackEvent(params),
     [instance],
   )
 
@@ -46,7 +40,6 @@ function usePiwik() {
   )
 
   return {
-    trackEvent,
     trackPageView,
     trackSiteSearch,
     trackLink,
