@@ -8,22 +8,11 @@ describe('PiwikTracker', () => {
     window._paq = []
     // eslint-disable-next-line no-new
     new PiwikTracker({
-      siteId: 1,
+      siteId: '1',
       urlBase: 'https://foo.bar',
-      configurations: { setCustomDimension: [1, 'someValue'], foo: 'bar' },
     })
-    expect(window._paq).toEqual([
-      ['setTrackerUrl', 'https://foo.bar/ppms.php'],
-      ['setSiteId', 1],
-      ['setCustomDimension', 1, 'someValue'],
-      ['foo', 'bar'],
-      ['enableHeartBeatTimer', 15],
-      ['enableLinkTracking', true],
-    ])
-  })
 
-  it('throws an error if no urlBase is passed in options', () => {
-    expect(() => new PiwikTracker({ siteId: 1 } as UserOptions)).toThrow()
+    expect(window._paq).toEqual([['enableHeartBeatTimer', 15]])
   })
 
   it('throws an error if no siteId is passed in options', () => {
@@ -36,13 +25,76 @@ describe('PiwikTracker', () => {
     it('should push the instruction', () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: 1,
+        siteId: '1',
       })
 
       window._paq = []
       piwik.pushInstruction('foo', 'bar', 1)
 
       expect(window._paq).toEqual([['foo', 'bar', 1]])
+    })
+  })
+
+  describe('trackPageView', () => {
+    it('should push the correct instruction', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+      })
+
+      window._paq = []
+      piwik.trackPageView({
+        href: '/pagina',
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window._paq).toEqual([
+        {
+          event: 'interaction.component.virtualPageview',
+          meta: {
+            user_city: 'Amsterdam',
+            vpv_url: '/pagina',
+          },
+        },
+      ])
+    })
+  })
+
+  describe('trackLink', () => {
+    it('should push the correct instruction', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+      })
+
+      window._paq = []
+      piwik.trackLink({
+        href: '/pagina',
+        linkTitle: 'pagina titel',
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window._paq).toEqual([
+        {
+          event: 'interaction.generic.component.anchorLink',
+          meta: {
+            user_city: 'Amsterdam',
+            action: 'pagina titel - /pagina',
+            category: 'interaction.generic.component.anchorLink',
+            label: '/',
+          },
+        },
+      ])
     })
   })
 })

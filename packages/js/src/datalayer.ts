@@ -5,13 +5,7 @@ export default function initializeDatalayer(
   nonce?: string,
 ) {
   if (!siteId) {
-    console.error('Empty tracking code for Piwik Pro.')
-    return
-  }
-
-  if (!containerUrl) {
-    console.error('Empty tracking URL for Piwik Pro.')
-    return
+    throw new Error('Empty tracking code for Piwik Pro.')
   }
 
   if (!document) {

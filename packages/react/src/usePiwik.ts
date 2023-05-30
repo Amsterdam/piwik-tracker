@@ -11,7 +11,7 @@ function usePiwik() {
   const instance = useContext(PiwikContext)
 
   const trackPageView = useCallback(
-    (params?: TrackPageViewParams) => instance?.trackPageView(params),
+    (params: TrackPageViewParams) => instance?.trackPageView(params),
     [instance],
   )
 
