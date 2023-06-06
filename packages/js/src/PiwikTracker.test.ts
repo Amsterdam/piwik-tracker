@@ -6,6 +6,7 @@ const URL_BASE = 'https://example.com'
 describe('PiwikTracker', () => {
   it('should build the window._paq correctly on initialisation', () => {
     window._paq = []
+
     // eslint-disable-next-line no-new
     new PiwikTracker({
       siteId: '1',
@@ -16,7 +17,7 @@ describe('PiwikTracker', () => {
   })
 
   it('should be possible to turn of hearBeatTimer', () => {
-    window._paq = []
+    window.dataLayer = []
     // eslint-disable-next-line no-new
     new PiwikTracker({
       siteId: '1',
@@ -26,7 +27,7 @@ describe('PiwikTracker', () => {
       },
     })
 
-    expect(window._paq).toEqual([])
+    expect(window.dataLayer).toEqual([])
   })
 
   it('throws an error if no siteId is passed in options', () => {
@@ -56,7 +57,7 @@ describe('PiwikTracker', () => {
         siteId: '1',
       })
 
-      window._paq = []
+      window.dataLayer = []
       piwik.trackPageView({
         href: '/pagina',
         customDimensions: [
@@ -67,7 +68,7 @@ describe('PiwikTracker', () => {
         ],
       })
 
-      expect(window._paq).toEqual([
+      expect(window.dataLayer).toEqual([
         {
           event: 'interaction.component.virtualPageview',
           meta: {
@@ -86,7 +87,7 @@ describe('PiwikTracker', () => {
         siteId: '1',
       })
 
-      window._paq = []
+      window.dataLayer = []
       piwik.trackLink({
         href: '/pagina',
         linkTitle: 'pagina titel',
@@ -98,7 +99,7 @@ describe('PiwikTracker', () => {
         ],
       })
 
-      expect(window._paq).toEqual([
+      expect(window.dataLayer).toEqual([
         {
           event: 'interaction.generic.component.anchorLink',
           meta: {
