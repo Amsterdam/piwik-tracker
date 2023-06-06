@@ -1,21 +1,17 @@
-import { TRACK_TYPES } from './constants'
+import { CUSTOM_EVENTS } from './constants'
+import initializeDatalayer from './datalayer'
 import {
   CustomDimension,
-  TrackEventParams,
+  Instruction,
   TrackLinkParams,
   TrackPageViewParams,
-  TrackParams,
   TrackSiteSearchParams,
+  TrackSiteSearchResultClick,
   UserOptions,
 } from './types'
 
 class PiwikTracker {
-  mutationObserver?: MutationObserver
-
   constructor(userOptions: UserOptions) {
-    if (!userOptions.urlBase) {
-      throw new Error('Piwik urlBase is required.')
-    }
     if (!userOptions.siteId) {
       throw new Error('Piwik siteId is required.')
     }
@@ -26,17 +22,10 @@ class PiwikTracker {
   private initialize({
     urlBase,
     siteId,
-    userId,
-    trackerUrl,
-    srcUrl,
     disabled,
     heartBeat,
-    linkTracking = true,
-    configurations = {},
+    nonce,
   }: UserOptions) {
-    const normalizedUrlBase =
-      urlBase[urlBase.length - 1] !== '/' ? `${urlBase}/` : urlBase
-
     if (typeof window === 'undefined') {
       return
     }
@@ -51,132 +40,122 @@ class PiwikTracker {
       return
     }
 
-    this.pushInstruction(
-      'setTrackerUrl',
-      trackerUrl ?? `${normalizedUrlBase}ppms.php`,
-    )
-
-    this.pushInstruction('setSiteId', siteId)
-
-    if (userId) {
-      this.pushInstruction('setUserId', userId)
-    }
-
-    Object.entries(configurations).forEach(([name, instructions]) => {
-      if (instructions instanceof Array) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        this.pushInstruction(name, ...instructions)
-      } else {
-        this.pushInstruction(name, instructions)
-      }
-    })
-
     // accurately measure the time spent on the last pageview of a visit
     if (!heartBeat || (heartBeat && heartBeat.active)) {
       this.enableHeartBeatTimer((heartBeat && heartBeat.seconds) ?? 15)
     }
 
-    // measure outbound links and downloads
-    // might not work accurately on SPAs because new links (dom elements) are created dynamically without a server-side page reload.
-    this.enableLinkTracking(linkTracking)
-
-    const doc = document
-    const scriptElement = doc.createElement('script')
-    const scripts = doc.getElementsByTagName('script')[0]
-
-    scriptElement.type = 'text/javascript'
-    scriptElement.async = true
-    scriptElement.defer = true
-    scriptElement.src = srcUrl || `${normalizedUrlBase}piwik.js`
-
-    if (scripts && scripts.parentNode) {
-      scripts.parentNode.insertBefore(scriptElement, scripts)
-    }
+    initializeDatalayer(siteId, urlBase, nonce)
   }
 
   enableHeartBeatTimer(seconds: number): void {
     this.pushInstruction('enableHeartBeatTimer', seconds)
   }
 
-  enableLinkTracking(active: boolean): void {
-    this.pushInstruction('enableLinkTracking', active)
-  }
-
-  // Tracks events
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackEvent
-  trackEvent({
-    category,
-    action,
-    name,
-    value,
-    ...otherParams
-  }: TrackEventParams): void {
-    if (category && action) {
-      this.track({
-        data: [TRACK_TYPES.TRACK_EVENT, category, action, name, value],
-        ...otherParams,
-      })
-    } else {
-      throw new Error(`Error: category and action are required.`)
-    }
-  }
-
   // Tracks site search
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackSiteSearch
   trackSiteSearch({
     keyword,
-    category,
     count,
-    ...otherParams
-  }: TrackSiteSearchParams): void {
-    if (keyword) {
-      this.track({
-        data: [TRACK_TYPES.TRACK_SEARCH, keyword, category, count],
-        ...otherParams,
-      })
+    type,
+    searchMachine,
+    customDimensions,
+  }: TrackSiteSearchParams) {
+    if (keyword && keyword.length > 3) {
+      this.pushCustomInstructionWithCustomDimensions(
+        {
+          event: CUSTOM_EVENTS.TRACK_SEARCH,
+          meta: {
+            search_term: keyword,
+            search_result_amount: count || 0,
+            search_type: type,
+            search_machine: searchMachine,
+          },
+        },
+        customDimensions,
+      )
     } else {
-      throw new Error(`Error: keyword is required.`)
+      throw new Error('Error: keyword should atleast be three characters long.')
     }
+  }
+
+  trackSiteSearchResultClick({
+    keyword,
+    searchResult: { title, url, type: resultType, position },
+    amountOfResults,
+    amountOfResultsShown,
+    type,
+    customDimensions,
+  }: TrackSiteSearchResultClick) {
+    if (keyword.length < 3) {
+      throw new Error('Error: keyword should be atleast three characters long.')
+    }
+
+    let parsedUrl = url
+
+    if (parsedUrl.includes('?')) {
+      parsedUrl = parsedUrl.substring(0, parsedUrl.indexOf('?'))
+    }
+
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_SEARCH_RESULT,
+        meta: {
+          search_term: keyword,
+          search_result_title: title,
+          search_result_url: parsedUrl,
+          search_result_type: resultType,
+          search_result_selected: position,
+          search_result_shown: amountOfResultsShown,
+          search_result_amount: amountOfResults,
+          search_type: type,
+        },
+      },
+      customDimensions,
+    )
   }
 
   // Tracks outgoing links to other sites and downloads
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackLink
-  trackLink({ href, linkType = 'link' }: TrackLinkParams): void {
-    this.pushInstruction(TRACK_TYPES.TRACK_LINK, href, linkType)
+  trackLink({ href, linkTitle, customDimensions }: TrackLinkParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_LINK,
+        meta: {
+          category: CUSTOM_EVENTS.TRACK_LINK,
+          action: `${linkTitle} - ${href}`,
+          label: window.location.pathname,
+        },
+      },
+      customDimensions,
+    )
   }
 
   // Tracks page views
-  // https://developers.piwik.pro/en/latest/data_collection/web/javascript_tracking_client/api.html#trackPageView
-  trackPageView(params?: TrackPageViewParams): void {
-    this.track({ data: [TRACK_TYPES.TRACK_VIEW], ...params })
+  trackPageView(params: TrackPageViewParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_VIEW,
+        meta: { vpv_url: params.href },
+      },
+      params.customDimensions,
+    )
   }
 
-  // Sends the tracked page/view/search to Piwik
-  track({
-    data = [],
-    documentTitle = window.document.title,
-    href,
-    customDimensions = false,
-  }: TrackParams): void {
-    if (data.length) {
-      if (
-        customDimensions &&
-        Array.isArray(customDimensions) &&
-        customDimensions.length
-      ) {
-        customDimensions.map((customDimension: CustomDimension) =>
-          this.pushInstruction(
-            'setCustomDimensionValue',
-            customDimension.id,
-            customDimension.value,
-          ),
-        )
-      }
-
-      this.pushInstruction('setCustomUrl', href ?? window.location.href)
-      this.pushInstruction('setDocumentTitle', documentTitle)
-      this.pushInstruction(...(data as [string, ...any[]]))
+  pushCustomInstructionWithCustomDimensions(
+    instruction: Instruction,
+    customDimensions: CustomDimension[] | undefined,
+  ) {
+    if (
+      customDimensions &&
+      Array.isArray(customDimensions) &&
+      customDimensions.length
+    ) {
+      customDimensions.forEach((customDimension: CustomDimension) => {
+        // eslint-disable-next-line no-param-reassign
+        instruction.meta[customDimension.id] = customDimension.value
+      })
     }
+
+    this.pushCustomInstruction(instruction)
   }
 
   /**
@@ -200,6 +179,18 @@ class PiwikTracker {
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line
       window._paq.push([name, ...args])
+    }
+
+    return this
+  }
+
+  pushCustomInstruction(instruction: Instruction) {
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.dataLayer !== 'undefined'
+    ) {
+      // eslint-disable-next-line
+      window.dataLayer.push(instruction)
     }
 
     return this

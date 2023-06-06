@@ -1,6 +1,6 @@
-import PiwikTracker from '@amsterdam/piwik-tracker'
-import { fireEvent, render, renderHook } from '@testing-library/react'
 import React from 'react'
+import { fireEvent, render, renderHook } from '@testing-library/react'
+import PiwikTracker from '@amsterdam/piwik-tracker'
 import createInstance from './instance'
 import PiwikProvider from './PiwikProvider'
 import usePiwik from './usePiwik'
@@ -9,43 +9,43 @@ jest.mock('@amsterdam/piwik-tracker')
 
 describe('usePiwik', () => {
   function JustAComponent() {
-    const { trackPageView, trackEvent } = usePiwik()
+    const { trackPageView, trackLink } = usePiwik()
 
     // Track page view after page load
     React.useEffect(() => {
       trackPageView({
-        documentTitle: 'Hello',
+        href: '/page',
       })
     }, [trackPageView])
 
     const handleOnClick = () => {
-      trackEvent({ category: 'sample-page', action: 'click-event' })
+      trackLink({ href: '#test', linkTitle: 'Click me' })
     }
 
     return (
-      <button type="button" data-testid="btn" onClick={handleOnClick}>
+      <a href="#test" data-testid="btn" onClick={handleOnClick}>
         Click me
-      </button>
+      </a>
     )
   }
   it('should render, call trackPageView once and call trackEvent when clicking a button', () => {
-    const trackEventMock = jest.fn()
+    const trackLinkMock = jest.fn()
     const trackPageViewMock = jest.fn()
     const mockedPiwikTracker = jest.mocked(PiwikTracker)
     mockedPiwikTracker.mockImplementation(
       () =>
         ({
-          trackEvent: trackEventMock,
+          trackLink: trackLinkMock,
           trackPageView: trackPageViewMock,
         } as unknown as PiwikTracker),
     )
 
     const instance = createInstance({
       urlBase: 'https://LINK.TO.DOMAIN',
-      siteId: 3,
+      siteId: '3',
     })
 
-    const Component = function () {
+    function Component() {
       return (
         <PiwikProvider value={instance}>
           <JustAComponent />
@@ -59,16 +59,16 @@ describe('usePiwik', () => {
 
     fireEvent.click(getByTestId('btn'))
 
-    expect(trackEventMock).toHaveBeenCalledWith({
-      category: 'sample-page',
-      action: 'click-event',
+    expect(trackLinkMock).toHaveBeenCalledWith({
+      href: '#test',
+      linkTitle: 'Click me',
     })
   })
 
   it('memoizes the methods between renders', () => {
     const instance = new PiwikTracker({
       urlBase: 'https://LINK.TO.DOMAIN',
-      siteId: 3, // optional, default value: `1`
+      siteId: '3', // optional, default value: `1`
     })
 
     const { result, rerender } = renderHook(() => usePiwik(), {
