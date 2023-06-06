@@ -16,7 +16,7 @@ describe('PiwikTracker', () => {
     expect(window._paq).toEqual([['enableHeartBeatTimer', 15]])
   })
 
-  it('should be possible to turn of hearBeatTimer', () => {
+  it('should be possible to turn off hearBeatTimer', () => {
     window.dataLayer = []
     // eslint-disable-next-line no-new
     new PiwikTracker({
