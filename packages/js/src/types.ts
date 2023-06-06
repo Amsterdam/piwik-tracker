@@ -11,6 +11,7 @@ export interface UserOptions {
     active: boolean
     seconds?: number
   }
+  nonce?: string
 }
 
 export interface TrackBaseParams {

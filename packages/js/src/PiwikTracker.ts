@@ -19,7 +19,13 @@ class PiwikTracker {
     this.initialize(userOptions)
   }
 
-  private initialize({ urlBase, siteId, disabled, heartBeat }: UserOptions) {
+  private initialize({
+    urlBase,
+    siteId,
+    disabled,
+    heartBeat,
+    nonce,
+  }: UserOptions) {
     if (typeof window === 'undefined') {
       return
     }
@@ -39,7 +45,7 @@ class PiwikTracker {
       this.enableHeartBeatTimer((heartBeat && heartBeat.seconds) ?? 15)
     }
 
-    initializeDatalayer(siteId, urlBase)
+    initializeDatalayer(siteId, urlBase, nonce)
   }
 
   enableHeartBeatTimer(seconds: number): void {
