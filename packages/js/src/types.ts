@@ -52,3 +52,9 @@ export interface Instruction {
   event: string
   meta: Record<string, string | number>
 }
+
+declare global {
+  interface Window {
+    dataLayer: Instruction[]
+  }
+}

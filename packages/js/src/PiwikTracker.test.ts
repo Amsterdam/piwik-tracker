@@ -15,6 +15,20 @@ describe('PiwikTracker', () => {
     expect(window._paq).toEqual([['enableHeartBeatTimer', 15]])
   })
 
+  it('should be possible to turn of hearBeatTimer', () => {
+    window._paq = []
+    // eslint-disable-next-line no-new
+    new PiwikTracker({
+      siteId: '1',
+      urlBase: 'https://foo.bar',
+      heartBeat: {
+        active: false,
+      },
+    })
+
+    expect(window._paq).toEqual([])
+  })
+
   it('throws an error if no siteId is passed in options', () => {
     expect(
       () => new PiwikTracker({ urlBase: URL_BASE } as UserOptions),

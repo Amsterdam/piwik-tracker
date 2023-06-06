@@ -185,9 +185,12 @@ class PiwikTracker {
   }
 
   pushCustomInstruction(instruction: Instruction) {
-    if (typeof window !== 'undefined') {
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.dataLayer !== 'undefined'
+    ) {
       // eslint-disable-next-line
-      window._paq.push(instruction)
+      window.dataLayer.push(instruction)
     }
 
     return this
