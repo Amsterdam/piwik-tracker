@@ -73,7 +73,7 @@ describe('PiwikTracker', () => {
           event: 'interaction.component.virtualPageview',
           meta: {
             user_city: 'Amsterdam',
-            vpv_url: '/pagina',
+            vpv_url: '/pagina/',
           },
         },
       ])
@@ -99,7 +99,7 @@ describe('PiwikTracker', () => {
       })
 
       expect(window.dataLayer.length).toEqual(1)
-      expect(window.dataLayer[0].meta.vpv_url).toEqual(href)
+      expect(window.dataLayer[0].meta.vpv_url).toEqual(`${href}/`)
 
       piwik.trackPageView({
         href,
