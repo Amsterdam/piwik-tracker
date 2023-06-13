@@ -78,6 +78,54 @@ describe('PiwikTracker', () => {
         },
       ])
     })
+
+    it('should prevent double pageviews', () => {
+      console.warn = jest.fn()
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+      })
+      const href = '/pagina'
+
+      window.dataLayer = []
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(1)
+      expect(window.dataLayer[0].meta.vpv_url).toEqual(href)
+
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(1)
+      expect(console.warn).toHaveBeenCalled()
+
+      piwik.trackPageView({
+        href: '/iets-anders',
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(2)
+    })
   })
 
   describe('trackLink', () => {

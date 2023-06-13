@@ -131,10 +131,21 @@ class PiwikTracker {
 
   // Tracks page views
   trackPageView(params: TrackPageViewParams) {
+    const lastPageviewIndex = window.dataLayer.findIndex(
+      (d) => d?.event === CUSTOM_EVENTS.TRACK_VIEW,
+    )
+
+    if (window.dataLayer[lastPageviewIndex]?.meta?.vpv_url === params.href) {
+      console.warn(
+        `Not registering pageview for ${params.href}. This url is equal to the last registerd url. To prevent double tracking this pageview is not registered.`,
+      )
+      return
+    }
+
     this.pushCustomInstructionWithCustomDimensions(
       {
         event: CUSTOM_EVENTS.TRACK_VIEW,
-        meta: { vpv_url: params.href },
+        meta: { vpv_url: `${params.href}` },
       },
       params.customDimensions,
     )
