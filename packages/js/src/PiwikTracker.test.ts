@@ -79,6 +79,26 @@ describe('PiwikTracker', () => {
       ])
     })
 
+    it('should add a / to the end of a url when not present', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+      })
+
+      window.dataLayer = []
+      piwik.trackPageView({
+        href: '/pagina',
+      })
+
+      expect(window.dataLayer[0].meta.vpv_url).toEqual('/pagina/')
+
+      piwik.trackPageView({
+        href: '/pagina2?some=data&other=data',
+      })
+
+      expect(window.dataLayer[1].meta.vpv_url).toEqual('/pagina2/')
+    })
+
     it('should prevent double pageviews', () => {
       console.warn = jest.fn()
       const piwik = new PiwikTracker({

@@ -131,11 +131,16 @@ class PiwikTracker {
 
   // Tracks page views
   trackPageView(params: TrackPageViewParams) {
+    // Strip ? part of url, these params might contain privacy sensative data
+    const indexOf = params.href.indexOf('?')
+    const strippedUrl =
+      indexOf > -1 ? params.href.substring(0, indexOf) : params.href
+
     // Urls we track must end in a /
     const trackedHref =
-      params.href.lastIndexOf('/') === params.href.length - 1
-        ? params.href
-        : `${params.href}/`
+      strippedUrl.lastIndexOf('/') === strippedUrl.length - 1
+        ? strippedUrl
+        : `${strippedUrl}/`
 
     // Check if this is not a double pageview
     const lastPageviewIndex = window.dataLayer.findIndex(
@@ -143,7 +148,7 @@ class PiwikTracker {
     )
     if (window.dataLayer[lastPageviewIndex]?.meta?.vpv_url === trackedHref) {
       console.warn(
-        `Not registering pageview for ${params.href}. This url is equal to the last registerd url. To prevent double tracking this pageview is not registered.`,
+        `To prevent double tracking of pageviews the pageview for url ${params.href} was not registered. This url is equal to the last registerd url.`,
       )
       return
     }
