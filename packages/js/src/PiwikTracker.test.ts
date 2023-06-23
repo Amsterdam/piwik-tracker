@@ -73,10 +73,78 @@ describe('PiwikTracker', () => {
           event: 'interaction.component.virtualPageview',
           meta: {
             user_city: 'Amsterdam',
-            vpv_url: '/pagina',
+            vpv_url: '/pagina/',
           },
         },
       ])
+    })
+
+    it('should add a / to the end of a url when not present', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+      })
+
+      window.dataLayer = []
+      piwik.trackPageView({
+        href: '/pagina',
+      })
+
+      expect(window.dataLayer[0].meta.vpv_url).toEqual('/pagina/')
+
+      piwik.trackPageView({
+        href: '/pagina2?some=data&other=data',
+      })
+
+      expect(window.dataLayer[1].meta.vpv_url).toEqual('/pagina2/')
+    })
+
+    it('should prevent double pageviews', () => {
+      console.warn = jest.fn()
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+      })
+      const href = '/pagina'
+
+      window.dataLayer = []
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(1)
+      expect(window.dataLayer[0].meta.vpv_url).toEqual(`${href}/`)
+
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(1)
+      expect(console.warn).toHaveBeenCalled()
+
+      piwik.trackPageView({
+        href: '/iets-anders',
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(2)
     })
   })
 
