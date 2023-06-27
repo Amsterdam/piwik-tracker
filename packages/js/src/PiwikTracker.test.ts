@@ -120,6 +120,7 @@ describe('PiwikTracker', () => {
 
       expect(window.dataLayer.length).toEqual(1)
       expect(window.dataLayer[0].meta.vpv_url).toEqual(`${href}/`)
+      expect(console.warn).not.toHaveBeenCalled()
 
       piwik.trackPageView({
         href,
@@ -145,6 +146,32 @@ describe('PiwikTracker', () => {
       })
 
       expect(window.dataLayer.length).toEqual(2)
+
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(3)
+      expect(console.warn).toHaveBeenCalledTimes(1)
+
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer.length).toEqual(3)
+      expect(console.warn).toHaveBeenCalledTimes(2)
     })
   })
 
