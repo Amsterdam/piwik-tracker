@@ -118,8 +118,10 @@ describe('PiwikTracker', () => {
         ],
       })
 
+      // Assert one datalayer entry, and console warn was not called
       expect(window.dataLayer.length).toEqual(1)
       expect(window.dataLayer[0].meta.vpv_url).toEqual(`${href}/`)
+      expect(console.warn).not.toHaveBeenCalled()
 
       piwik.trackPageView({
         href,
@@ -131,6 +133,7 @@ describe('PiwikTracker', () => {
         ],
       })
 
+      // Trying to register same page again, assert datalayer stil at 1 and warn was called
       expect(window.dataLayer.length).toEqual(1)
       expect(console.warn).toHaveBeenCalled()
 
@@ -144,7 +147,37 @@ describe('PiwikTracker', () => {
         ],
       })
 
+      // Registering new page, datalayer should be at 2 and warn still at 1
       expect(window.dataLayer.length).toEqual(2)
+      expect(console.warn).toHaveBeenCalledTimes(1)
+
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      // Registering original page again (which is allowed), datalayer should be at 3 and warn still at 1
+      expect(window.dataLayer.length).toEqual(3)
+      expect(console.warn).toHaveBeenCalledTimes(1)
+
+      piwik.trackPageView({
+        href,
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      // Registering same page again, datalayer should remain at 3 and warn should be at 2
+      expect(window.dataLayer.length).toEqual(3)
+      expect(console.warn).toHaveBeenCalledTimes(2)
     })
   })
 

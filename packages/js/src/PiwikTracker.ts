@@ -143,9 +143,16 @@ class PiwikTracker {
         : `${strippedUrl}/`
 
     // Check if this is not a double pageview
-    const lastPageviewIndex = window.dataLayer.findIndex(
-      (d) => d?.event === CUSTOM_EVENTS.TRACK_VIEW,
-    )
+    let lastPageviewIndex = -1
+
+    // Find last index of pageview event
+    for (let index = window.dataLayer.length - 1; index > -1; index -= 1) {
+      if (window.dataLayer[index].event === CUSTOM_EVENTS.TRACK_VIEW) {
+        lastPageviewIndex = index
+        break
+      }
+    }
+
     if (window.dataLayer[lastPageviewIndex]?.meta?.vpv_url === trackedHref) {
       console.warn(
         `To prevent double tracking of pageviews the pageview for url ${params.href} was not registered. This url is equal to the last registerd url.`,
