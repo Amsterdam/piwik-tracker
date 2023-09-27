@@ -1,6 +1,7 @@
 import { useCallback, useContext } from 'react';
 import PiwikContext from './PiwikContext';
 import {
+  TrackDownloadParams,
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
@@ -26,7 +27,7 @@ function usePiwik() {
   );
 
   const trackDownload = useCallback(
-    (params: TrackLinkParams) => instance?.trackDownload(params),
+    (params: TrackDownloadParams) => instance?.trackDownload(params),
     [instance]
   );
 
