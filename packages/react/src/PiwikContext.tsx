@@ -1,6 +1,6 @@
-import { createContext } from 'react'
-import { PiwikInstance } from './types'
+import { createContext } from 'react';
+import { PiwikInstance } from './types';
 
-const PiwikContext = createContext<PiwikInstance | null>(null)
+const PiwikContext = createContext<PiwikInstance | null>(null);
 
-export default PiwikContext
+export default PiwikContext;

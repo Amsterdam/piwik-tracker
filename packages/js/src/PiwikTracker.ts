@@ -1,5 +1,5 @@
-import { CUSTOM_EVENTS } from './constants'
-import initializeDatalayer from './datalayer'
+import { CUSTOM_EVENTS } from './constants';
+import initializeDatalayer from './datalayer';
 import {
   CustomDimension,
   Instruction,
@@ -9,15 +9,15 @@ import {
   TrackSiteSearchParams,
   TrackSiteSearchResultClick,
   UserOptions,
-} from './types'
+} from './types';
 
 class PiwikTracker {
   constructor(userOptions: UserOptions) {
     if (!userOptions.siteId) {
-      throw new Error('Piwik siteId is required.')
+      throw new Error('Piwik siteId is required.');
     }
 
-    this.initialize(userOptions)
+    this.initialize(userOptions);
   }
 
   private initialize({
@@ -28,29 +28,29 @@ class PiwikTracker {
     nonce,
   }: UserOptions) {
     if (typeof window === 'undefined') {
-      return
+      return;
     }
 
-    window._paq = window._paq || []
+    window._paq = window._paq || [];
 
     if (window._paq.length !== 0) {
-      return
+      return;
     }
 
     if (disabled) {
-      return
+      return;
     }
 
     // accurately measure the time spent on the last pageview of a visit
     if (!heartBeat || (heartBeat && heartBeat.active)) {
-      this.enableHeartBeatTimer((heartBeat && heartBeat.seconds) ?? 15)
+      this.enableHeartBeatTimer((heartBeat && heartBeat.seconds) ?? 15);
     }
 
-    initializeDatalayer(siteId, urlBase, nonce)
+    initializeDatalayer(siteId, urlBase, nonce);
   }
 
   enableHeartBeatTimer(seconds: number): void {
-    this.pushInstruction('enableHeartBeatTimer', seconds)
+    this.pushInstruction('enableHeartBeatTimer', seconds);
   }
 
   // Tracks site search
@@ -72,10 +72,12 @@ class PiwikTracker {
             search_machine: searchMachine,
           },
         },
-        customDimensions,
-      )
+        customDimensions
+      );
     } else {
-      throw new Error('Error: keyword should atleast be three characters long.')
+      throw new Error(
+        'Error: keyword should atleast be three characters long.'
+      );
     }
   }
 
@@ -88,13 +90,15 @@ class PiwikTracker {
     customDimensions,
   }: TrackSiteSearchResultClick) {
     if (keyword.length < 3) {
-      throw new Error('Error: keyword should be atleast three characters long.')
+      throw new Error(
+        'Error: keyword should be atleast three characters long.'
+      );
     }
 
-    let parsedUrl = url
+    let parsedUrl = url;
 
     if (parsedUrl.includes('?')) {
-      parsedUrl = parsedUrl.substring(0, parsedUrl.indexOf('?'))
+      parsedUrl = parsedUrl.substring(0, parsedUrl.indexOf('?'));
     }
 
     this.pushCustomInstructionWithCustomDimensions(
@@ -111,8 +115,8 @@ class PiwikTracker {
           search_type: type,
         },
       },
-      customDimensions,
-    )
+      customDimensions
+    );
   }
 
   // Tracks outgoing links to other sites and downloads
@@ -126,8 +130,8 @@ class PiwikTracker {
           label: window.location.pathname,
         },
       },
-      customDimensions,
-    )
+      customDimensions
+    );
   }
 
   trackDownload({
@@ -145,39 +149,39 @@ class PiwikTracker {
           label: `${downloadUrl} - ${window.location.pathname}`,
         },
       },
-      customDimensions,
-    )
+      customDimensions
+    );
   }
 
   // Tracks page views
   trackPageView(params: TrackPageViewParams) {
     // Strip ? part of url, these params might contain privacy sensative data
-    const indexOf = params.href.indexOf('?')
+    const indexOf = params.href.indexOf('?');
     const strippedUrl =
-      indexOf > -1 ? params.href.substring(0, indexOf) : params.href
+      indexOf > -1 ? params.href.substring(0, indexOf) : params.href;
 
     // Urls we track must end in a /
     const trackedHref =
       strippedUrl.lastIndexOf('/') === strippedUrl.length - 1
         ? strippedUrl
-        : `${strippedUrl}/`
+        : `${strippedUrl}/`;
 
     // Check if this is not a double pageview
-    let lastPageviewIndex = -1
+    let lastPageviewIndex = -1;
 
     // Find last index of pageview event
     for (let index = window.dataLayer.length - 1; index > -1; index -= 1) {
       if (window.dataLayer[index].event === CUSTOM_EVENTS.TRACK_VIEW) {
-        lastPageviewIndex = index
-        break
+        lastPageviewIndex = index;
+        break;
       }
     }
 
     if (window.dataLayer[lastPageviewIndex]?.meta?.vpv_url === trackedHref) {
       console.warn(
-        `To prevent double tracking of pageviews the pageview for url ${params.href} was not registered. This url is equal to the last registerd url.`,
-      )
-      return
+        `To prevent double tracking of pageviews the pageview for url ${params.href} was not registered. This url is equal to the last registerd url.`
+      );
+      return;
     }
 
     this.pushCustomInstructionWithCustomDimensions(
@@ -185,13 +189,13 @@ class PiwikTracker {
         event: CUSTOM_EVENTS.TRACK_VIEW,
         meta: { vpv_url: `${trackedHref}` },
       },
-      params.customDimensions,
-    )
+      params.customDimensions
+    );
   }
 
   pushCustomInstructionWithCustomDimensions(
     instruction: Instruction,
-    customDimensions: CustomDimension[] | undefined,
+    customDimensions: CustomDimension[] | undefined
   ) {
     if (
       customDimensions &&
@@ -200,11 +204,11 @@ class PiwikTracker {
     ) {
       customDimensions.forEach((customDimension: CustomDimension) => {
         // eslint-disable-next-line no-param-reassign
-        instruction.meta[customDimension.id] = customDimension.value
-      })
+        instruction.meta[customDimension.id] = customDimension.value;
+      });
     }
 
-    this.pushCustomInstruction(instruction)
+    this.pushCustomInstruction(instruction);
   }
 
   /**
@@ -227,10 +231,10 @@ class PiwikTracker {
   pushInstruction(name: string, ...args: any[]): PiwikTracker {
     if (typeof window !== 'undefined') {
       // eslint-disable-next-line
-      window._paq.push([name, ...args])
+      window._paq.push([name, ...args]);
     }
 
-    return this
+    return this;
   }
 
   pushCustomInstruction(instruction: Instruction) {
@@ -239,11 +243,11 @@ class PiwikTracker {
       typeof window.dataLayer !== 'undefined'
     ) {
       // eslint-disable-next-line
-      window.dataLayer.push(instruction)
+      window.dataLayer.push(instruction);
     }
 
-    return this
+    return this;
   }
 }
 
-export default PiwikTracker
+export default PiwikTracker;
