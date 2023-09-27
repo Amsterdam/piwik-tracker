@@ -3,6 +3,7 @@ import initializeDatalayer from './datalayer'
 import {
   CustomDimension,
   Instruction,
+  TrackDownloadParams,
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
@@ -123,6 +124,25 @@ class PiwikTracker {
           category: CUSTOM_EVENTS.TRACK_LINK,
           action: `${linkTitle} - ${href}`,
           label: window.location.pathname,
+        },
+      },
+      customDimensions,
+    )
+  }
+
+  trackDownload({
+    downloadKind,
+    documentKind,
+    downloadUrl,
+    customDimensions,
+  }: TrackDownloadParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_DOWNLOAD,
+        meta: {
+          category: CUSTOM_EVENTS.TRACK_DOWNLOAD,
+          action: `${downloadKind} - ${documentKind}`,
+          label: `${downloadUrl} - ${window.location.pathname}`,
         },
       },
       customDimensions,

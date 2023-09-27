@@ -200,17 +200,55 @@ describe('PiwikTracker', () => {
         ],
       })
 
-      expect(window.dataLayer).toEqual([
-        {
-          event: 'interaction.generic.component.anchorLink',
-          meta: {
-            user_city: 'Amsterdam',
-            action: 'pagina titel - /pagina',
-            category: 'interaction.generic.component.anchorLink',
-            label: '/',
+      expect(window.dataLayer).toMatchInlineSnapshot(`
+        [
+          {
+            "event": "interaction.generic.component.anchorLink",
+            "meta": {
+              "action": "pagina titel - /pagina",
+              "category": "interaction.generic.component.anchorLink",
+              "label": "/",
+              "user_city": "Amsterdam",
+            },
           },
-        },
-      ])
+        ]
+      `)
+    })
+  })
+
+  describe('trackDownload', () => {
+    it('should push the correct instructions', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+      })
+
+      window.dataLayer = []
+      piwik.trackDownload({
+        downloadKind: 'vergunning',
+        documentKind: 'pdf',
+        downloadUrl: '/downloads/bestand.pdf',
+        customDimensions: [
+          {
+            id: 'user_city',
+            value: 'Amsterdam',
+          },
+        ],
+      })
+
+      expect(window.dataLayer).toMatchInlineSnapshot(`
+        [
+          {
+            "event": "interaction.generic.component.download",
+            "meta": {
+              "action": "vergunning - pdf",
+              "category": "interaction.generic.component.download",
+              "label": "/downloads/bestand.pdf = /",
+              "user_city": "Amsterdam",
+            },
+          },
+        ]
+      `)
     })
   })
 })

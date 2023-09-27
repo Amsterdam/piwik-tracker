@@ -48,6 +48,12 @@ export interface TrackSiteSearchResultClick extends TrackBaseParams {
   type: 'autocomplete' | 'manueel' // heeft iemand het zoekresultaat helemaal zelf getypt of via Autocomplete aangeklikt
 }
 
+export interface TrackDownloadParams extends TrackBaseParams {
+  downloadKind: string // Het soort (functioneel) document (b.v. jaaropgave, wmo-besluit, vergunning, etc.)
+  documentKind: string // Het type document
+  downloadUrl: string // De download url
+}
+
 export interface Instruction {
   event: string
   meta: Record<string, string | number>
