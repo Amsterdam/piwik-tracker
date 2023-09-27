@@ -243,7 +243,7 @@ describe('PiwikTracker', () => {
             "meta": {
               "action": "vergunning - pdf",
               "category": "interaction.generic.component.download",
-              "label": "/downloads/bestand.pdf = /",
+              "label": "/downloads/bestand.pdf - /",
               "user_city": "Amsterdam",
             },
           },
