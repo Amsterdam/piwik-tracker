@@ -135,8 +135,8 @@ class PiwikTracker {
   }
 
   trackDownload({
-    downloadKind,
-    documentKind,
+    downloadDescription,
+    fileType,
     downloadUrl,
     customDimensions,
   }: TrackDownloadParams) {
@@ -145,7 +145,7 @@ class PiwikTracker {
         event: CUSTOM_EVENTS.TRACK_DOWNLOAD,
         meta: {
           category: CUSTOM_EVENTS.TRACK_DOWNLOAD,
-          action: `${downloadKind} - ${documentKind}`,
+          action: `${downloadDescription} - ${fileType}`,
           label: `${downloadUrl} - ${window.location.pathname}`,
         },
       },
