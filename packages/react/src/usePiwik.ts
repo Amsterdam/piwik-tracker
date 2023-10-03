@@ -1,51 +1,57 @@
-import { useCallback, useContext } from 'react'
-import PiwikContext from './PiwikContext'
+import { useCallback, useContext } from 'react';
+import PiwikContext from './PiwikContext';
 import {
+  TrackDownloadParams,
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
-} from './types'
-import useOutboundClickListener from './utils/useOutboundClickListener'
+} from './types';
+import useOutboundClickListener from './utils/useOutboundClickListener';
 
 function usePiwik() {
-  const instance = useContext(PiwikContext)
+  const instance = useContext(PiwikContext);
 
   const trackPageView = useCallback(
     (params: TrackPageViewParams) => instance?.trackPageView(params),
-    [instance],
-  )
+    [instance]
+  );
 
   const trackSiteSearch = useCallback(
     (params: TrackSiteSearchParams) => instance?.trackSiteSearch(params),
-    [instance],
-  )
+    [instance]
+  );
 
   const trackLink = useCallback(
     (params: TrackLinkParams) => instance?.trackLink(params),
-    [instance],
-  )
+    [instance]
+  );
+
+  const trackDownload = useCallback(
+    (params: TrackDownloadParams) => instance?.trackDownload(params),
+    [instance]
+  );
 
   const enableLinkTracking = useCallback(() => {
     if (instance) {
-      useOutboundClickListener(instance)
+      useOutboundClickListener(instance);
     }
-  }, [instance])
+  }, [instance]);
 
   const pushInstruction = useCallback(
     (name: string, ...args: any[]) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      instance?.pushInstruction(name, ...args)
+      instance?.pushInstruction(name, ...args);
     },
-    [instance],
-  )
+    [instance]
+  );
 
   return {
     trackPageView,
     trackSiteSearch,
     trackLink,
+    trackDownload,
     enableLinkTracking,
     pushInstruction,
-  }
+  };
 }
 
-export default usePiwik
+export default usePiwik;

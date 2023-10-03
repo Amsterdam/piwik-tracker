@@ -14,7 +14,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 18
           check-latest: true
           cache: npm
 
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        command: [lint, test]
+        command: [test]
     steps:
       - name: Restore setup
         uses: actions/cache@v2

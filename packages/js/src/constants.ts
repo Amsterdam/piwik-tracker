@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const TRACK_TYPES = {
   TRACK_EVENT: 'trackEvent',
   TRACK_LINK: 'trackLink',
@@ -11,4 +10,5 @@ export const CUSTOM_EVENTS = {
   TRACK_LINK: 'interaction.generic.component.anchorLink',
   TRACK_SEARCH: 'interaction.component.search',
   TRACK_SEARCH_RESULT: 'interaction.component.searchResultClick',
+  TRACK_DOWNLOAD: 'interaction.generic.component.download',
 }

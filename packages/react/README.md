@@ -14,7 +14,7 @@ npm install @amsterdam/piwik-tracker-react
 Before you're able to use this Piwik Tracker you need to create a Piwik instance with your project specific details and wrap your application with the `PiwikProvider` that this package exposes.
 
 ```tsx
-import { PiwikProvider, createInstance } from '@amsterdam/piwik-tracker-react'
+import { PiwikProvider, createInstance } from '@amsterdam/piwik-tracker-react';
 
 const instance = createInstance({
   urlBase: 'https://LINK.TO.DOMAIN',
@@ -25,37 +25,37 @@ const instance = createInstance({
     active: true, // optional, default value: true
     seconds: 10, // optional, default value: `15
   },
-})
+});
 
 ReactDOM.render(
   <PiwikProvider value={instance}>
     <MyApp />
-  </PiwikProvider>,
-)
+  </PiwikProvider>
+);
 ```
 
 After wrapping your application with the `PiwikProvider` you can use the `usePiwik` hook to track your application from anywhere within the PiwikProvider component tree:
 
 ```tsx
-import React from 'react'
-import { usePiwik } from '@amsterdam/piwik-tracker-react'
+import React from 'react';
+import { usePiwik } from '@amsterdam/piwik-tracker-react';
 
 const MyPage = () => {
-  const { trackPageView } = usePiwik()
+  const { trackPageView } = usePiwik();
 
   // Track page view
   React.useEffect(() => {
     trackPageView({
       href: 'https://LINK.TO.PAGE',
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <button type="button" onClick={handleOnClick}>
       Click me
     </button>
-  )
-}
+  );
+};
 ```
 
 ## Advanced usage
@@ -63,11 +63,11 @@ const MyPage = () => {
 [Custom dimensions](https://help.piwik.pro/support/reports/custom-dimension/) can be used:
 
 ```tsx
-import React from 'react'
-import { usePiwik } from '@amsterdam/piwik-tracker-react'
+import React from 'react';
+import { usePiwik } from '@amsterdam/piwik-tracker-react';
 
 const MyPage = () => {
-  const { trackPageView } = usePiwik()
+  const { trackPageView } = usePiwik();
 
   // Track page view
   React.useEffect(() => {
@@ -79,15 +79,15 @@ const MyPage = () => {
           value: 'loggedIn',
         },
       ], // optional
-    })
-  }, [])
+    });
+  }, []);
 
   return (
     <button type="button" onClick={handleOnClick}>
       Click me
     </button>
-  )
-}
+  );
+};
 ```
 
 The `usePiwik` hook also exposes the following methods:
@@ -95,11 +95,12 @@ The `usePiwik` hook also exposes the following methods:
 - `trackSiteSearch()`
 - `trackLink()`
 - `pushInstruction()`
+- `trackDownload()`
 
 For example, the `pushInstruction()` function can be used to push instructions to Piwik for execution. This
 is equivalent to pushing entries into the `_paq` array.
 
 ```javascript
-const { pushInstruction } = usePiwik()
-pushInstruction('setUserId', 'USER_ID_HERE')
+const { pushInstruction } = usePiwik();
+pushInstruction('setUserId', 'USER_ID_HERE');
 ```
