@@ -9,7 +9,6 @@
     "test": "jest",
     "prettier": "prettier --write ./packages/**/**/*.{ts,tsx}",
     "prepublishOnly": "npm run build",
-    "postinstall": "lerna link",
     "publish:canary": "lerna publish --canary",
     "publish:stable": "lerna publish"
   },
@@ -31,9 +30,6 @@
     "react-test-renderer": "^18.3.1",
     "ts-jest": "^29.1.5",
     "typescript": "^5.5.3"
-  },
-  "engines": {
-    "node": "^18"
   },
   "name": "piwik-tracker"
 }
