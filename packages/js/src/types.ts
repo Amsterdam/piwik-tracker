@@ -14,7 +14,7 @@ export interface UserOptions {
   nonce?: string;
 }
 
-export interface TrackBaseParams {
+interface TrackBaseParams {
   customDimensions?: CustomDimension[];
 }
 
@@ -28,6 +28,31 @@ export interface TrackLinkParams extends TrackBaseParams {
   linkTitle: string;
 }
 
+export interface TrackLinkClickParams extends TrackBaseParams {
+  componentName: string,
+  isInternalDestination: boolean,
+  href: string;
+  linkType?: 'download' | 'link';
+  linkTitle: string;
+}
+
+export interface TrackAnchorLinkParams extends TrackBaseParams {
+  anchor: string;
+  linkType?: 'download' | 'link';
+  linkTitle: string;
+}
+
+export interface TrackMapInteractionParams extends TrackBaseParams {
+  clickText: string;
+  clickUrl?: string;
+  action: 'checkboxClickOn' | 'checkboxClickOff' | 'radioButtonClick' | 'pinClick' | 'detailOverlayClick' | 'closeOverlayClick'
+}
+
+export interface TrackVisibilityParams extends TrackBaseParams {
+  action : 'getoond' | 'verborgen',
+  nameOfElementBecameVisible : string,
+}
+
 export interface TrackSiteSearchParams extends TrackBaseParams {
   keyword: string;
   searchMachine: string;
@@ -35,7 +60,7 @@ export interface TrackSiteSearchParams extends TrackBaseParams {
   type: 'autocomplete' | 'manueel';
 }
 
-export interface TrackSiteSearchResultClick extends TrackBaseParams {
+export interface TrackSiteSearchResultClickParams extends TrackBaseParams {
   keyword: string; // de zoekopdracht van de gebruiker (minimaal drie karakters)
   searchResult: {
     title: string; // de titel van het aangeklikt element

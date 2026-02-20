@@ -32,7 +32,7 @@ const useOutboundClickListener = (instance: PiwikInstance): void => {
         ),
       )
     ) {
-      instance.trackLink({ href, linkTitle: target.innerText })
+      instance.trackLinkClick({ componentName: 'otherLinks', href, linkTitle: target.innerText, isInternalDestination: false })
     }
   }
 
