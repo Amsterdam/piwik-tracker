@@ -125,7 +125,7 @@ class PiwikTracker {
 
   /**
    * Tracks outgoing links to other sites and downloads
-   * @deprecated Since version 2.0. Will be removed in version 3.0. Use newMethod() instead.
+   * @deprecated Deprecated and will be removed in a future version. Use trackLinkClick() or trackAnchorLink() instead.
    */
   trackLink({ href, linkTitle, customDimensions }: TrackLinkParams) {
     console.warn('trackLink() is deprecated and will be removed in a future version. Use trackLinkClick() or trackAnchorLink() instead.');
