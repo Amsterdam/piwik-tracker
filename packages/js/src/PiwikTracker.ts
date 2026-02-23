@@ -1,6 +1,6 @@
 import { CUSTOM_EVENTS } from './constants';
 import initializeDatalayer from './datalayer';
-import {
+import type {
   CustomDimension,
   Instruction,
   TrackDownloadParams,
@@ -9,10 +9,10 @@ import {
   TrackSiteSearchParams,
   TrackSiteSearchResultClickParams,
   UserOptions,
-  type TrackAnchorLinkParams,
-  type TrackLinkClickParams,
-  type TrackMapInteractionParams,
-  type TrackVisibilityParams,
+  TrackAnchorLinkParams,
+  TrackLinkClickParams,
+  TrackMapInteractionParams,
+  TrackVisibilityParams,
 } from './types';
 
 class PiwikTracker {
