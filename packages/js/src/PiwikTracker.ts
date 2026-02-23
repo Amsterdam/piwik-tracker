@@ -142,7 +142,7 @@ class PiwikTracker {
     );
   }
   
-  // Tracks outgoing links to other sites and downloads
+  // Tracks outgoing links to other pages, sites and downloads
   trackLinkClick({ componentName, href, linkTitle, isInternalDestination, customDimensions }: TrackLinkClickParams) {
     this.pushCustomInstructionWithCustomDimensions(
       {
