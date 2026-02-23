@@ -32,13 +32,11 @@ export interface TrackLinkClickParams extends TrackBaseParams {
   componentName: string,
   isInternalDestination: boolean,
   href: string;
-  linkType?: 'download' | 'link';
   linkTitle: string;
 }
 
 export interface TrackAnchorLinkParams extends TrackBaseParams {
   anchor: string;
-  linkType?: 'download' | 'link';
   linkTitle: string;
 }
 
