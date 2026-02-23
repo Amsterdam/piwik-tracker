@@ -61,9 +61,9 @@ function usePiwik() {
     [instance]
   );
 
-  const enableLinkTracking = useCallback(() => {
+  const enableLinkTracking = useCallback((internalBaseDomain?: string) => {
     if (instance) {
-      useOutboundClickListener(instance);
+      useOutboundClickListener(instance, internalBaseDomain);
     }
   }, [instance]);
 
