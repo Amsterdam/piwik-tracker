@@ -96,6 +96,7 @@ The `usePiwik` hook also exposes the following methods:
 - `trackLink()`
 - `pushInstruction()`
 - `trackDownload()`
+- `enableLinkTracking()`
 
 For example, the `pushInstruction()` function can be used to push instructions to Piwik for execution. This
 is equivalent to pushing entries into the `_paq` array.
@@ -103,4 +104,11 @@ is equivalent to pushing entries into the `_paq` array.
 ```javascript
 const { pushInstruction } = usePiwik();
 pushInstruction('setUserId', 'USER_ID_HERE');
+```
+
+And the enableLinkTracking can be used to automatically track all outbound link clicks. The string parameter internalBaseDomain can be used to determine internal/external request on an organisational level.
+
+```javascript
+const { pushInstruction } = usePiwik();
+enableLinkTracking('organisationdomain.nl');
 ```
