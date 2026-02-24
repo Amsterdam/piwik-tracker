@@ -5,6 +5,11 @@ import {
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
+  type TrackAnchorLinkParams,
+  type TrackLinkClickParams,
+  type TrackMapInteractionParams,
+  type TrackSiteSearchResultClickParams,
+  type TrackVisibilityParams,
 } from './types';
 import useOutboundClickListener from './utils/useOutboundClickListener';
 
@@ -16,13 +21,28 @@ function usePiwik() {
     [instance]
   );
 
+  const trackLink = useCallback(
+    (params: TrackLinkParams) => instance?.trackLink(params),
+    [instance]
+  );
+
+  const trackLinkClick = useCallback(
+    (params: TrackLinkClickParams) => instance?.trackLinkClick(params),
+    [instance]
+  );
+
+  const trackAnchorLink = useCallback(
+    (params: TrackAnchorLinkParams) => instance?.trackAnchorLink(params),
+    [instance]
+  );
+
   const trackSiteSearch = useCallback(
     (params: TrackSiteSearchParams) => instance?.trackSiteSearch(params),
     [instance]
   );
 
-  const trackLink = useCallback(
-    (params: TrackLinkParams) => instance?.trackLink(params),
+  const trackSiteSearchResultClick = useCallback(
+    (params: TrackSiteSearchResultClickParams) => instance?.trackSiteSearchResultClick(params),
     [instance]
   );
 
@@ -30,10 +50,20 @@ function usePiwik() {
     (params: TrackDownloadParams) => instance?.trackDownload(params),
     [instance]
   );
+  
+  const trackMapInteraction = useCallback(
+    (params: TrackMapInteractionParams) => instance?.trackMapInteraction(params),
+    [instance]
+  );
 
-  const enableLinkTracking = useCallback(() => {
+  const trackVisibility = useCallback(
+    (params: TrackVisibilityParams) => instance?.trackVisibility(params),
+    [instance]
+  );
+
+  const enableLinkTracking = useCallback((internalBaseDomain?: string) => {
     if (instance) {
-      useOutboundClickListener(instance);
+      useOutboundClickListener(instance, internalBaseDomain);
     }
   }, [instance]);
 
@@ -46,9 +76,14 @@ function usePiwik() {
 
   return {
     trackPageView,
-    trackSiteSearch,
     trackLink,
+    trackLinkClick,
+    trackAnchorLink,
+    trackSiteSearch,
+    trackSiteSearchResultClick,
     trackDownload,
+    trackMapInteraction,
+    trackVisibility,
     enableLinkTracking,
     pushInstruction,
   };

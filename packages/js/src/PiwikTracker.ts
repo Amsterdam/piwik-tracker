@@ -1,14 +1,18 @@
 import { CUSTOM_EVENTS } from './constants';
 import initializeDatalayer from './datalayer';
-import {
+import type {
   CustomDimension,
   Instruction,
   TrackDownloadParams,
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
-  TrackSiteSearchResultClick,
+  TrackSiteSearchResultClickParams,
   UserOptions,
+  TrackAnchorLinkParams,
+  TrackLinkClickParams,
+  TrackMapInteractionParams,
+  TrackVisibilityParams,
 } from './types';
 
 class PiwikTracker {
@@ -88,7 +92,7 @@ class PiwikTracker {
     amountOfResultsShown,
     type,
     customDimensions,
-  }: TrackSiteSearchResultClick) {
+  }: TrackSiteSearchResultClickParams) {
     if (keyword.length < 3) {
       throw new Error(
         'Error: keyword should be atleast three characters long.'
@@ -119,8 +123,12 @@ class PiwikTracker {
     );
   }
 
-  // Tracks outgoing links to other sites and downloads
+  /**
+   * Tracks outgoing links to other sites and downloads
+   * @deprecated Deprecated and will be removed in a future version. Use trackLinkClick() or trackAnchorLink() instead.
+   */
   trackLink({ href, linkTitle, customDimensions }: TrackLinkParams) {
+    console.warn('trackLink() is deprecated and will be removed in a future version. Use trackLinkClick() or trackAnchorLink() instead.');
     this.pushCustomInstructionWithCustomDimensions(
       {
         event: CUSTOM_EVENTS.TRACK_LINK,
@@ -128,6 +136,64 @@ class PiwikTracker {
           category: CUSTOM_EVENTS.TRACK_LINK,
           action: `${linkTitle} - ${href}`,
           label: window.location.pathname,
+        },
+      },
+      customDimensions
+    );
+  }
+  
+  // Tracks outgoing links to other pages, sites and downloads
+  trackLinkClick({ componentName, href, linkTitle, isInternalDestination, customDimensions }: TrackLinkClickParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_LINK_CLICK,
+        meta: {
+          category: CUSTOM_EVENTS.TRACK_LINK_CLICK,
+          action: `${componentName} - ${isInternalDestination ? 'intern' : 'extern'}`,
+          label: `${linkTitle} - ${href}`,
+        },
+      },
+      customDimensions
+    );
+  }
+
+  // Tracks anchor links to elements on page
+  trackAnchorLink({ anchor, linkTitle, customDimensions }: TrackAnchorLinkParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_ANCHOR_LINK,
+        meta: {
+          category: CUSTOM_EVENTS.TRACK_ANCHOR_LINK,
+          action: `${linkTitle} - ${anchor}`,
+          label: window.location.pathname,
+        },
+      },
+      customDimensions
+    );
+  }
+  
+  trackMapInteraction({ action, clickText, clickUrl, customDimensions }: TrackMapInteractionParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_MAP_INTERACTION,
+        meta: {
+          category: CUSTOM_EVENTS.TRACK_MAP_INTERACTION,
+          action,
+          label: `${clickText}${clickUrl ? ` - ${clickUrl}` : ''}`,
+        },
+      },
+      customDimensions
+    );
+  }
+
+  trackVisibility({ action, nameOfElementBecameVisible, customDimensions }: TrackVisibilityParams) {
+    this.pushCustomInstructionWithCustomDimensions(
+      {
+        event: CUSTOM_EVENTS.TRACK_VISIBILITY,
+        meta: {
+          category: CUSTOM_EVENTS.TRACK_VISIBILITY,
+          action,
+          label: `${nameOfElementBecameVisible} - ${window.location.pathname}`,
         },
       },
       customDimensions
