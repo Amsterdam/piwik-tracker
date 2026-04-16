@@ -1,6 +1,6 @@
 {
   "name": "@amsterdam/piwik-tracker",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0-alpha.1",
   "description": "Piwik pro tracker for frontend projects",
   "main": "lib/index.js",
   "module": "es/index.js",
