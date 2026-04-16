@@ -10,3 +10,5 @@ declare global {
 export default PiwikTracker
 
 export { types }
+
+export { defaultUrlTransformer } from './urlTransformers'

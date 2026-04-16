@@ -3,10 +3,25 @@ export interface CustomDimension {
   value: string;
 }
 
+export type UrlTransformMethod =
+  | 'trackPageView'
+  | 'trackLink'
+  | 'trackLinkClick'
+  | 'trackDownload'
+  | 'trackSiteSearchResultClick'
+  | 'trackMapInteraction';
+
+export interface UrlTransformMeta {
+  method: UrlTransformMethod;
+}
+
+export type UrlTransformer = (meta: UrlTransformMeta, url: string) => string;
+
 export interface UserOptions {
   urlBase?: string;
   siteId: string;
   disabled?: boolean;
+  urlTransformer?: UrlTransformer;
   heartBeat?: {
     active: boolean;
     seconds?: number;

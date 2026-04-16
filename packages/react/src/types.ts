@@ -15,6 +15,12 @@ export interface PiwikInstance {
 
 export type InstanceParams = types.UserOptions
 
+export type UrlTransformer = types.UrlTransformer
+
+export type UrlTransformMethod = types.UrlTransformMethod
+
+export type UrlTransformMeta = types.UrlTransformMeta
+
 export type TrackPageViewParams = types.TrackPageViewParams
 
 export type TrackLinkParams = types.TrackLinkParams

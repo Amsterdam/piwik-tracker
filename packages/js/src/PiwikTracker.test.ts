@@ -1,5 +1,6 @@
 import PiwikTracker from './PiwikTracker';
 import { UserOptions } from './types';
+import { defaultUrlTransformer } from './urlTransformers';
 
 const URL_BASE = 'https://example.com';
 
@@ -255,6 +256,60 @@ describe('PiwikTracker', () => {
           },
         ]
       `);
+    });
+  });
+
+  describe('urlTransformer', () => {
+    it('should transform urls in trackPageView', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+        urlTransformer: defaultUrlTransformer,
+      });
+
+      window.dataLayer = [];
+      piwik.trackPageView({
+        href: '/users/123/profile?some=data',
+      });
+
+      expect(window.dataLayer[0].meta.vpv_url).toEqual('/users/**/profile/');
+    });
+
+    it('should transform urls in trackLinkClick', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+        urlTransformer: defaultUrlTransformer,
+      });
+
+      window.dataLayer = [];
+      piwik.trackLinkClick({
+        componentName: 'otherLinks',
+        href: 'https://example.com/users/123/profile',
+        linkTitle: 'Profile',
+        isInternalDestination: false,
+      });
+
+      expect(window.dataLayer[0].meta.label).toEqual("Profile - https://example.com/users/**/profile");
+    });
+
+    it('should transform urls in trackDownload', () => {
+      const piwik = new PiwikTracker({
+        urlBase: URL_BASE,
+        siteId: '1',
+        urlTransformer: defaultUrlTransformer,
+      });
+
+      window.dataLayer = [];
+      piwik.trackDownload({
+        downloadDescription: 'vergunning',
+        fileType: 'pdf',
+        downloadUrl: '/downloads/2026-04-09/bestand.pdf',
+      });
+
+      expect(window.dataLayer[0].meta.label).toEqual(
+        '/downloads/**/bestand.pdf - /'
+      );
     });
   });
 });
