@@ -11,4 +11,4 @@ export default PiwikTracker
 
 export { types }
 
-export { defaultUrlTransformer } from './urlTransformers'
+export { urlTransformers } from './urlTransformers'

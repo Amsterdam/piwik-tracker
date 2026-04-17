@@ -2,7 +2,7 @@ import type { UrlTransformMeta, UrlTransformer } from './types';
 
 const digitCount = (value: string): number => (value.match(/\d/g) ?? []).length;
 
-export const defaultUrlTransformer: UrlTransformer = (
+const redactIdLikePathSegments: UrlTransformer = (
   _meta: UrlTransformMeta,
   inputUrl: string
 ) => {
@@ -30,4 +30,8 @@ export const defaultUrlTransformer: UrlTransformer = (
   }
 
   return result;
+};
+
+export const urlTransformers = {
+  redactIdLikePathSegments,
 };

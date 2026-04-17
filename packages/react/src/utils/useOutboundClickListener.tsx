@@ -44,7 +44,7 @@ const useOutboundClickListener = (
         }
         
         // Do not track non-links like mailto: and tel:
-        if (!['https:', 'http:'].includes(targetUrl.protocol)) {
+        if (!targetUrl.protocol.startsWith('https:') && !targetUrl.protocol.startsWith('http:')) {
             return;
         }
         
@@ -53,22 +53,12 @@ const useOutboundClickListener = (
             return;
         }
 
-        { // Navigate after the tag manager had a chance to process the event.
+        { 
+            // When an outbound link is clicked, the navigations can happen before the tracking request is complete.
+            // To avoid losing the last event we delay navigation.
             event.preventDefault();
-
-            const navigate = (() => {
-                let navigated = false;
-                return () => {
-                    if (navigated) {
-                        return;
-                    }
-                    navigated = true;
-                    window.location.assign(target.href);
-                };
-            })();
-
-            // Small delay to allow the tracking call to be processed before leaving the page.
-            window.setTimeout(navigate, 250);
+            const navigate = () => window.location.assign(target.href)
+            window.setTimeout(navigate, 300);
 
             const targetBaseDomain = extractBaseDomain(targetUrl.hostname);
             const sourceBaseDomain = internalBaseDomain || window.location.hostname

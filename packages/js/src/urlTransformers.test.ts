@@ -1,21 +1,21 @@
-import { defaultUrlTransformer } from './urlTransformers';
+import { urlTransformers } from './urlTransformers';
 
-describe('defaultUrlTransformer', () => {
+describe('urlTransformers.redactIdLikePathSegments', () => {
   it('replaces any path segment with more than one digit by **', () => {
-    expect(defaultUrlTransformer({ method: 'trackPageView' }, '/foo/12/bar')).toBe(
+    expect(urlTransformers.redactIdLikePathSegments({ method: 'trackPageView' }, '/foo/12/bar')).toBe(
       '/foo/12/bar'
     );
-    expect(defaultUrlTransformer({ method: 'trackPageView' }, '/foo/123/bar')).toBe(
+    expect(urlTransformers.redactIdLikePathSegments({ method: 'trackPageView' }, '/foo/123/bar')).toBe(
       '/foo/**/bar'
     );
-    expect(defaultUrlTransformer({ method: 'trackPageView' }, '/foo/a1b23/bar')).toBe(
+    expect(urlTransformers.redactIdLikePathSegments({ method: 'trackPageView' }, '/foo/a1b23/bar')).toBe(
       '/foo/**/bar'
     );
   });
 
   it('preserves query and hash on absolute urls', () => {
     expect(
-      defaultUrlTransformer(
+      urlTransformers.redactIdLikePathSegments(
         { method: 'trackLinkClick' },
         'https://example.com/foo/123/bar?x=123#section'
       )
@@ -23,7 +23,7 @@ describe('defaultUrlTransformer', () => {
   });
 
   it('preserves relative paths without forcing a leading slash', () => {
-    expect(defaultUrlTransformer({ method: 'trackDownload' }, 'foo/123/bar')).toBe(
+    expect(urlTransformers.redactIdLikePathSegments({ method: 'trackDownload' }, 'foo/123/bar')).toBe(
       'foo/**/bar'
     );
   });

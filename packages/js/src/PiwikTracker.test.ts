@@ -1,6 +1,6 @@
 import PiwikTracker from './PiwikTracker';
 import { UserOptions } from './types';
-import { defaultUrlTransformer } from './urlTransformers';
+import { urlTransformers } from './urlTransformers';
 
 const URL_BASE = 'https://example.com';
 
@@ -264,7 +264,7 @@ describe('PiwikTracker', () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: '1',
-        urlTransformer: defaultUrlTransformer,
+        urlTransformer: urlTransformers.redactIdLikePathSegments,
       });
 
       window.dataLayer = [];
@@ -279,7 +279,7 @@ describe('PiwikTracker', () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: '1',
-        urlTransformer: defaultUrlTransformer,
+        urlTransformer: urlTransformers.redactIdLikePathSegments,
       });
 
       window.dataLayer = [];
@@ -297,7 +297,7 @@ describe('PiwikTracker', () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: '1',
-        urlTransformer: defaultUrlTransformer,
+        urlTransformer: urlTransformers.redactIdLikePathSegments,
       });
 
       window.dataLayer = [];
