@@ -1,23 +1,23 @@
 // Taken from https://github.com/PiwikPRO/react-piwik-pro/blob/master/src/core/index.ts
 export default function initializeDatalayer(
   siteId: string,
-  containerUrl: string | undefined = 'https://dap.amsterdam.nl',
+  containerUrl: string | undefined = "https://dap.amsterdam.nl",
   nonce?: string,
 ) {
   if (!siteId) {
-    throw new Error('Empty tracking code for Piwik Pro.')
+    throw new Error("Empty tracking code for Piwik Pro.");
   }
 
   if (!document) {
     console.error(
-      'Was not possible to access Document interface. Make sure this module is running on a Browser w/ access do Document interface.',
-    )
+      "Was not possible to access Document interface. Make sure this module is running on a Browser w/ access do Document interface.",
+    );
   }
 
-  const s: HTMLScriptElement = document.createElement('script')
-  s.async = false
+  const s: HTMLScriptElement = document.createElement("script");
+  s.async = false;
   if (nonce) {
-    s.setAttribute('nonce', nonce)
+    s.setAttribute("nonce", nonce);
   }
   s.text = `(function(window, document, dataLayerName, id) {
     window[dataLayerName]=window[dataLayerName]||[],window[dataLayerName].push({start:(new Date).getTime(),event:"stg.start"});var scripts=document.getElementsByTagName('script')[0],tags=document.createElement('script');
@@ -26,8 +26,8 @@ export default function initializeDatalayer(
     var qP=[];dataLayerName!=="dataLayer"&&qP.push("data_layer_name="+dataLayerName),isStgDebug&&qP.push("stg_debug");var qPString=qP.length>0?("?"+qP.join("&")):"";
     tags.async=!0,tags.src="${containerUrl}/containers/"+id+".js"+qPString,scripts.parentNode.insertBefore(tags,scripts);
     !function(a,n,i){a[n]=a[n]||{};for(var c=0;c<i.length;c++)!function(i){a[n][i]=a[n][i]||{},a[n][i].api=a[n][i].api||function(){var a=[].slice.call(arguments,0);"string"==typeof a[0]&&window[dataLayerName].push({event:n+"."+i+":"+a[0],parameters:[].slice.call(arguments,1)})}}(i[c])}(window,"ppms",["tm","cm"]);
-    })(window, document, 'dataLayer', '${siteId}')`
+    })(window, document, 'dataLayer', '${siteId}')`;
 
-  const head: HTMLHeadElement = document.getElementsByTagName('body')[0]
-  head.appendChild(s)
+  const head: HTMLHeadElement = document.getElementsByTagName("body")[0];
+  head.appendChild(s);
 }

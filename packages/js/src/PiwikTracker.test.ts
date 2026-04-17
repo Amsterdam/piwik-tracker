@@ -1,8 +1,8 @@
-import PiwikTracker from './PiwikTracker';
-import { UserOptions } from './types';
-import { urlTransformers } from './urlTransformers';
+import PiwikTracker from "./PiwikTracker";
+import { UserOptions } from "./types";
+import { urlTransformers } from "./urlTransformers";
 
-const URL_BASE = 'https://example.com';
+const URL_BASE = "https://example.com";
 
 declare global {
   interface Window {
@@ -10,25 +10,25 @@ declare global {
   }
 }
 
-describe('PiwikTracker', () => {
-  it('should build the window._paq correctly on initialisation', () => {
+describe("PiwikTracker", () => {
+  it("should build the window._paq correctly on initialisation", () => {
     window._paq = [];
 
     // eslint-disable-next-line no-new
     new PiwikTracker({
-      siteId: '1',
-      urlBase: 'https://foo.bar',
+      siteId: "1",
+      urlBase: "https://foo.bar",
     });
 
-    expect(window._paq).toEqual([['enableHeartBeatTimer', 15]]);
+    expect(window._paq).toEqual([["enableHeartBeatTimer", 15]]);
   });
 
-  it('should be possible to turn off hearBeatTimer', () => {
+  it("should be possible to turn off hearBeatTimer", () => {
     window.dataLayer = [];
     // eslint-disable-next-line no-new
     new PiwikTracker({
-      siteId: '1',
-      urlBase: 'https://foo.bar',
+      siteId: "1",
+      urlBase: "https://foo.bar",
       heartBeat: {
         active: false,
       },
@@ -37,90 +37,90 @@ describe('PiwikTracker', () => {
     expect(window.dataLayer).toEqual([]);
   });
 
-  it('throws an error if no siteId is passed in options', () => {
+  it("throws an error if no siteId is passed in options", () => {
     expect(
-      () => new PiwikTracker({ urlBase: URL_BASE } as UserOptions)
+      () => new PiwikTracker({ urlBase: URL_BASE } as UserOptions),
     ).toThrow();
   });
 
-  describe('pushInstruction', () => {
-    it('should push the instruction', () => {
+  describe("pushInstruction", () => {
+    it("should push the instruction", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
       });
 
       window._paq = [];
-      piwik.pushInstruction('foo', 'bar', 1);
+      piwik.pushInstruction("foo", "bar", 1);
 
-      expect(window._paq).toEqual([['foo', 'bar', 1]]);
+      expect(window._paq).toEqual([["foo", "bar", 1]]);
     });
   });
 
-  describe('trackPageView', () => {
-    it('should push the correct instruction', () => {
+  describe("trackPageView", () => {
+    it("should push the correct instruction", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
       });
 
       window.dataLayer = [];
       piwik.trackPageView({
-        href: '/pagina',
+        href: "/pagina",
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
 
       expect(window.dataLayer).toEqual([
         {
-          event: 'interaction.component.virtualPageview',
+          event: "interaction.component.virtualPageview",
           meta: {
-            user_city: 'Amsterdam',
-            vpv_url: '/pagina/',
+            user_city: "Amsterdam",
+            vpv_url: "/pagina/",
           },
         },
       ]);
     });
 
-    it('should add a / to the end of a url when not present', () => {
+    it("should add a / to the end of a url when not present", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
       });
 
       window.dataLayer = [];
       piwik.trackPageView({
-        href: '/pagina',
+        href: "/pagina",
       });
 
-      expect(window.dataLayer[0].meta.vpv_url).toEqual('/pagina/');
+      expect(window.dataLayer[0].meta.vpv_url).toEqual("/pagina/");
 
       piwik.trackPageView({
-        href: '/pagina2?some=data&other=data',
+        href: "/pagina2?some=data&other=data",
       });
 
-      expect(window.dataLayer[1].meta.vpv_url).toEqual('/pagina2/');
+      expect(window.dataLayer[1].meta.vpv_url).toEqual("/pagina2/");
     });
 
-    it('should prevent double pageviews', () => {
+    it("should prevent double pageviews", () => {
       console.warn = jest.fn();
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
       });
-      const href = '/pagina';
+      const href = "/pagina";
 
       window.dataLayer = [];
       piwik.trackPageView({
         href,
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
@@ -134,8 +134,8 @@ describe('PiwikTracker', () => {
         href,
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
@@ -145,11 +145,11 @@ describe('PiwikTracker', () => {
       expect(console.warn).toHaveBeenCalled();
 
       piwik.trackPageView({
-        href: '/iets-anders',
+        href: "/iets-anders",
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
@@ -162,8 +162,8 @@ describe('PiwikTracker', () => {
         href,
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
@@ -176,8 +176,8 @@ describe('PiwikTracker', () => {
         href,
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
@@ -188,21 +188,21 @@ describe('PiwikTracker', () => {
     });
   });
 
-  describe('trackLink', () => {
-    it('should push the correct instruction', () => {
+  describe("trackLink", () => {
+    it("should push the correct instruction", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
       });
 
       window.dataLayer = [];
       piwik.trackLink({
-        href: '/pagina',
-        linkTitle: 'pagina titel',
+        href: "/pagina",
+        linkTitle: "pagina titel",
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
@@ -223,22 +223,22 @@ describe('PiwikTracker', () => {
     });
   });
 
-  describe('trackDownload', () => {
-    it('should push the correct instructions', () => {
+  describe("trackDownload", () => {
+    it("should push the correct instructions", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
       });
 
       window.dataLayer = [];
       piwik.trackDownload({
-        downloadDescription: 'vergunning',
-        fileType: 'pdf',
-        downloadUrl: '/downloads/bestand.pdf',
+        downloadDescription: "vergunning",
+        fileType: "pdf",
+        downloadUrl: "/downloads/bestand.pdf",
         customDimensions: [
           {
-            id: 'user_city',
-            value: 'Amsterdam',
+            id: "user_city",
+            value: "Amsterdam",
           },
         ],
       });
@@ -259,56 +259,58 @@ describe('PiwikTracker', () => {
     });
   });
 
-  describe('urlTransformer', () => {
-    it('should transform urls in trackPageView', () => {
+  describe("urlTransformer", () => {
+    it("should transform urls in trackPageView", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
         urlTransformer: urlTransformers.redactIdLikePathSegments,
       });
 
       window.dataLayer = [];
       piwik.trackPageView({
-        href: '/users/123/profile?some=data',
+        href: "/users/123/profile?some=data",
       });
 
-      expect(window.dataLayer[0].meta.vpv_url).toEqual('/users/**/profile/');
+      expect(window.dataLayer[0].meta.vpv_url).toEqual("/users/**/profile/");
     });
 
-    it('should transform urls in trackLinkClick', () => {
+    it("should transform urls in trackLinkClick", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
         urlTransformer: urlTransformers.redactIdLikePathSegments,
       });
 
       window.dataLayer = [];
       piwik.trackLinkClick({
-        componentName: 'otherLinks',
-        href: 'https://example.com/users/123/profile',
-        linkTitle: 'Profile',
+        componentName: "otherLinks",
+        href: "https://example.com/users/123/profile",
+        linkTitle: "Profile",
         isInternalDestination: false,
       });
 
-      expect(window.dataLayer[0].meta.label).toEqual("Profile - https://example.com/users/**/profile");
+      expect(window.dataLayer[0].meta.label).toEqual(
+        "Profile - https://example.com/users/**/profile",
+      );
     });
 
-    it('should transform urls in trackDownload', () => {
+    it("should transform urls in trackDownload", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
-        siteId: '1',
+        siteId: "1",
         urlTransformer: urlTransformers.redactIdLikePathSegments,
       });
 
       window.dataLayer = [];
       piwik.trackDownload({
-        downloadDescription: 'vergunning',
-        fileType: 'pdf',
-        downloadUrl: '/downloads/2026-04-09/bestand.pdf',
+        downloadDescription: "vergunning",
+        fileType: "pdf",
+        downloadUrl: "/downloads/2026-04-09/bestand.pdf",
       });
 
       expect(window.dataLayer[0].meta.label).toEqual(
-        '/downloads/**/bestand.pdf - /'
+        "/downloads/**/bestand.pdf - /",
       );
     });
   });

@@ -1,5 +1,5 @@
-import { CUSTOM_EVENTS } from './constants';
-import initializeDatalayer from './datalayer';
+import { CUSTOM_EVENTS } from "./constants";
+import initializeDatalayer from "./datalayer";
 import type {
   CustomDimension,
   Instruction,
@@ -15,7 +15,7 @@ import type {
   TrackLinkClickParams,
   TrackMapInteractionParams,
   TrackVisibilityParams,
-} from './types';
+} from "./types";
 
 class PiwikTracker {
   private urlTransformer?: UrlTransformer;
@@ -24,7 +24,7 @@ class PiwikTracker {
 
   constructor(userOptions: UserOptions) {
     if (!userOptions.siteId) {
-      throw new Error('Piwik siteId is required.');
+      throw new Error("Piwik siteId is required.");
     }
 
     this.urlTransformer = userOptions.urlTransformer;
@@ -37,10 +37,7 @@ class PiwikTracker {
       return url;
     }
 
-    return this.urlTransformer(
-      meta,
-      url
-    );
+    return this.urlTransformer(meta, url);
   }
 
   private initialize({
@@ -50,7 +47,7 @@ class PiwikTracker {
     heartBeat,
     nonce,
   }: UserOptions) {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return;
     }
 
@@ -73,7 +70,7 @@ class PiwikTracker {
   }
 
   enableHeartBeatTimer(seconds: number): void {
-    this.pushInstruction('enableHeartBeatTimer', seconds);
+    this.pushInstruction("enableHeartBeatTimer", seconds);
   }
 
   // Tracks site search
@@ -95,11 +92,11 @@ class PiwikTracker {
             search_machine: searchMachine,
           },
         },
-        customDimensions
+        customDimensions,
       );
     } else {
       throw new Error(
-        'Error: keyword should atleast be three characters long.'
+        "Error: keyword should atleast be three characters long.",
       );
     }
   }
@@ -114,19 +111,19 @@ class PiwikTracker {
   }: TrackSiteSearchResultClickParams) {
     if (keyword.length < 3) {
       throw new Error(
-        'Error: keyword should be atleast three characters long.'
+        "Error: keyword should be atleast three characters long.",
       );
     }
 
     let parsedUrl = url;
 
-    if (parsedUrl.includes('?')) {
-      parsedUrl = parsedUrl.substring(0, parsedUrl.indexOf('?'));
+    if (parsedUrl.includes("?")) {
+      parsedUrl = parsedUrl.substring(0, parsedUrl.indexOf("?"));
     }
 
     parsedUrl = this.transformUrl(
-      { method: 'trackSiteSearchResultClick' },
-      parsedUrl
+      { method: "trackSiteSearchResultClick" },
+      parsedUrl,
     );
 
     this.pushCustomInstructionWithCustomDimensions(
@@ -143,7 +140,7 @@ class PiwikTracker {
           search_type: type,
         },
       },
-      customDimensions
+      customDimensions,
     );
   }
 
@@ -152,9 +149,11 @@ class PiwikTracker {
    * @deprecated Deprecated and will be removed in a future version. Use trackLinkClick() or trackAnchorLink() instead.
    */
   trackLink({ href, linkTitle, customDimensions }: TrackLinkParams) {
-    console.warn('trackLink() is deprecated and will be removed in a future version. Use trackLinkClick() or trackAnchorLink() instead.');
+    console.warn(
+      "trackLink() is deprecated and will be removed in a future version. Use trackLinkClick() or trackAnchorLink() instead.",
+    );
 
-    const transformedHref = this.transformUrl({ method: 'trackLink' }, href);
+    const transformedHref = this.transformUrl({ method: "trackLink" }, href);
     this.pushCustomInstructionWithCustomDimensions(
       {
         event: CUSTOM_EVENTS.TRACK_LINK,
@@ -164,28 +163,41 @@ class PiwikTracker {
           label: window.location.pathname,
         },
       },
-      customDimensions
+      customDimensions,
     );
   }
-  
+
   // Tracks outgoing links to other pages, sites and downloads
-  trackLinkClick({ componentName, href, linkTitle, isInternalDestination, customDimensions }: TrackLinkClickParams) {
-    const transformedHref = this.transformUrl({ method: 'trackLinkClick' }, href);
+  trackLinkClick({
+    componentName,
+    href,
+    linkTitle,
+    isInternalDestination,
+    customDimensions,
+  }: TrackLinkClickParams) {
+    const transformedHref = this.transformUrl(
+      { method: "trackLinkClick" },
+      href,
+    );
     this.pushCustomInstructionWithCustomDimensions(
       {
         event: CUSTOM_EVENTS.TRACK_LINK_CLICK,
         meta: {
           category: CUSTOM_EVENTS.TRACK_LINK_CLICK,
-          action: `${componentName} - ${isInternalDestination ? 'intern' : 'extern'}`,
+          action: `${componentName} - ${isInternalDestination ? "intern" : "extern"}`,
           label: `${linkTitle} - ${transformedHref}`,
         },
       },
-      customDimensions
+      customDimensions,
     );
   }
 
   // Tracks anchor links to elements on page
-  trackAnchorLink({ anchor, linkTitle, customDimensions }: TrackAnchorLinkParams) {
+  trackAnchorLink({
+    anchor,
+    linkTitle,
+    customDimensions,
+  }: TrackAnchorLinkParams) {
     this.pushCustomInstructionWithCustomDimensions(
       {
         event: CUSTOM_EVENTS.TRACK_ANCHOR_LINK,
@@ -195,13 +207,18 @@ class PiwikTracker {
           label: window.location.pathname,
         },
       },
-      customDimensions
+      customDimensions,
     );
   }
-  
-  trackMapInteraction({ action, clickText, clickUrl, customDimensions }: TrackMapInteractionParams) {
+
+  trackMapInteraction({
+    action,
+    clickText,
+    clickUrl,
+    customDimensions,
+  }: TrackMapInteractionParams) {
     const transformedClickUrl = clickUrl
-      ? this.transformUrl({ method: 'trackMapInteraction' }, clickUrl)
+      ? this.transformUrl({ method: "trackMapInteraction" }, clickUrl)
       : undefined;
 
     this.pushCustomInstructionWithCustomDimensions(
@@ -210,14 +227,18 @@ class PiwikTracker {
         meta: {
           category: CUSTOM_EVENTS.TRACK_MAP_INTERACTION,
           action,
-          label: `${clickText}${transformedClickUrl ? ` - ${transformedClickUrl}` : ''}`,
+          label: `${clickText}${transformedClickUrl ? ` - ${transformedClickUrl}` : ""}`,
         },
       },
-      customDimensions
+      customDimensions,
     );
   }
 
-  trackVisibility({ action, nameOfElementBecameVisible, customDimensions }: TrackVisibilityParams) {
+  trackVisibility({
+    action,
+    nameOfElementBecameVisible,
+    customDimensions,
+  }: TrackVisibilityParams) {
     this.pushCustomInstructionWithCustomDimensions(
       {
         event: CUSTOM_EVENTS.TRACK_VISIBILITY,
@@ -227,7 +248,7 @@ class PiwikTracker {
           label: `${nameOfElementBecameVisible} - ${window.location.pathname}`,
         },
       },
-      customDimensions
+      customDimensions,
     );
   }
 
@@ -238,12 +259,12 @@ class PiwikTracker {
     customDimensions,
   }: TrackDownloadParams) {
     const transformedDownloadUrl = this.transformUrl(
-      { method: 'trackDownload' },
-      downloadUrl
+      { method: "trackDownload" },
+      downloadUrl,
     );
     const transformedWindowLocationPathname = this.transformUrl(
-      { method: 'trackDownload' },
-      window.location.pathname
+      { method: "trackDownload" },
+      window.location.pathname,
     );
 
     this.pushCustomInstructionWithCustomDimensions(
@@ -255,33 +276,33 @@ class PiwikTracker {
           label: `${transformedDownloadUrl} - ${transformedWindowLocationPathname}`,
         },
       },
-      customDimensions
+      customDimensions,
     );
   }
 
   // Tracks page views
   trackPageView(params: TrackPageViewParams) {
     // Strip ? part of url, these params might contain privacy sensative data
-    const indexOf = params.href.indexOf('?');
+    const indexOf = params.href.indexOf("?");
     const strippedUrl =
       indexOf > -1 ? params.href.substring(0, indexOf) : params.href;
 
     // Urls we track must end in a /
     const trackedHref =
-      strippedUrl.lastIndexOf('/') === strippedUrl.length - 1
+      strippedUrl.lastIndexOf("/") === strippedUrl.length - 1
         ? strippedUrl
         : `${strippedUrl}/`;
 
     if (this.lastTrackedPageviewHref === trackedHref) {
       console.warn(
-        `To prevent double tracking of pageviews the pageview for url ${params.href} was not registered. This url is equal to the last registerd url.`
+        `To prevent double tracking of pageviews the pageview for url ${params.href} was not registered. This url is equal to the last registerd url.`,
       );
       return;
     }
 
     const transformedTrackedHref = this.transformUrl(
-      { method: 'trackPageView' },
-      trackedHref
+      { method: "trackPageView" },
+      trackedHref,
     );
 
     this.pushCustomInstructionWithCustomDimensions(
@@ -289,7 +310,7 @@ class PiwikTracker {
         event: CUSTOM_EVENTS.TRACK_VIEW,
         meta: { vpv_url: `${transformedTrackedHref}` },
       },
-      params.customDimensions
+      params.customDimensions,
     );
 
     this.lastTrackedPageviewHref = trackedHref;
@@ -297,7 +318,7 @@ class PiwikTracker {
 
   pushCustomInstructionWithCustomDimensions(
     instruction: Instruction,
-    customDimensions: CustomDimension[] | undefined
+    customDimensions: CustomDimension[] | undefined,
   ) {
     if (
       customDimensions &&
@@ -331,7 +352,7 @@ class PiwikTracker {
    * @param args The arguments to pass along with the instruction.
    */
   pushInstruction(name: string, ...args: any[]): PiwikTracker {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // eslint-disable-next-line
       window._paq.push([name, ...args]);
     }
@@ -341,8 +362,8 @@ class PiwikTracker {
 
   pushCustomInstruction(instruction: Instruction) {
     if (
-      typeof window !== 'undefined' &&
-      typeof window.dataLayer !== 'undefined'
+      typeof window !== "undefined" &&
+      typeof window.dataLayer !== "undefined"
     ) {
       // eslint-disable-next-line
       window.dataLayer.push(instruction);
