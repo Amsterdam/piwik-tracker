@@ -57,24 +57,7 @@ To mask or normalize URLs before they’re pushed to the `dataLayer`, pass a `ur
 
 The library exports `urlTransformers.redactIdLikePathSegments`, which masks any URL path segment that contains 3 or more digits (e.g. `/users/123/profile` becomes `/users/**/profile`).
 
-If you need different behavior you can provide your own transformer:
-
-```ts
-import PiwikTracker, { type types } from '@amsterdam/piwik-tracker'
-
-const urlTransformer: types.UrlTransformer = ({ method }, url) => {
-  if (method === 'trackPageView') {
-    return url.replace(/\d+/g, '**')
-  }
-  return url
-}
-
-const tracker = new PiwikTracker({
-  siteId: '3',
-  urlBase: 'https://LINK.TO.DOMAIN',
-  urlTransformer,
-})
-```
+If you need different behavior you can provide your own transformer.
 
 ## Advanced usage
 
