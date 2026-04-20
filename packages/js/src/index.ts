@@ -1,12 +1,14 @@
-import PiwikTracker from './PiwikTracker'
-import * as types from './types'
+import PiwikTracker from "./PiwikTracker";
+import * as types from "./types";
 
 declare global {
   interface Window {
-    _paq: any[]
+    _paq: any[];
   }
 }
 
-export default PiwikTracker
+export default PiwikTracker;
 
-export { types }
+export { types };
+
+export { urlTransformers } from "./urlTransformers";

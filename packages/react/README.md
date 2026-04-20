@@ -14,16 +14,17 @@ npm install @amsterdam/piwik-tracker-react
 Before you're able to use this Piwik Tracker you need to create a Piwik instance with your project specific details and wrap your application with the `PiwikProvider` that this package exposes.
 
 ```tsx
-import { PiwikProvider, createInstance } from '@amsterdam/piwik-tracker-react';
+import { PiwikProvider, createInstance, urlTransformers } from '@amsterdam/piwik-tracker-react';
 
 const instance = createInstance({
   urlBase: 'https://LINK.TO.DOMAIN',
   siteId: '3',
   disabled: false, // optional, false by default. Makes all tracking calls no-ops if set to true.
+  urlTransformer: urlTransformers.redactIdLikePathSegments, // optional, transform/mask URLs before they are pushed to `dataLayer`
   heartBeat: {
     // optional, enabled by default
     active: true, // optional, default value: true
-    seconds: 10, // optional, default value: `15
+    seconds: 10, // optional, default value: `15`
   },
 });
 
@@ -106,9 +107,15 @@ const { pushInstruction } = usePiwik();
 pushInstruction('setUserId', 'USER_ID_HERE');
 ```
 
-And the enableLinkTracking can be used to automatically track all outbound link clicks. The string parameter internalBaseDomain can be used to determine internal/external request on an organisational level.
+And the `enableLinkTracking()` helper can be used to automatically track outbound link clicks.
+
+- Only HTTP(S) links are tracked (e.g. `mailto:` and `tel:` are ignored).
+- For outbound navigation, the listener delays navigation briefly (~250ms) so the tracking call can be processed.
+- The optional `internalBaseDomain` string can be used to classify destinations on an organisational level (e.g. treat `subdomain.example.com` and `example.com` as “internal”).
+
+Note: base-domain extraction only works for single-part top-level domains like `.nl` and `.com` (and not for multi-part TLDs like `.co.uk`).
 
 ```javascript
-const { pushInstruction } = usePiwik();
+const { enableLinkTracking } = usePiwik();
 enableLinkTracking('organisationdomain.nl');
 ```

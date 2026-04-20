@@ -3,10 +3,25 @@ export interface CustomDimension {
   value: string;
 }
 
+export type UrlTransformMethod =
+  | "trackPageView"
+  | "trackLink"
+  | "trackLinkClick"
+  | "trackDownload"
+  | "trackSiteSearchResultClick"
+  | "trackMapInteraction";
+
+export interface UrlTransformMeta {
+  method: UrlTransformMethod;
+}
+
+export type UrlTransformer = (meta: UrlTransformMeta, url: string) => string;
+
 export interface UserOptions {
   urlBase?: string;
   siteId: string;
   disabled?: boolean;
+  urlTransformer?: UrlTransformer;
   heartBeat?: {
     active: boolean;
     seconds?: number;
@@ -24,13 +39,13 @@ export interface TrackPageViewParams extends TrackBaseParams {
 
 export interface TrackLinkParams extends TrackBaseParams {
   href: string;
-  linkType?: 'download' | 'link';
+  linkType?: "download" | "link";
   linkTitle: string;
 }
 
 export interface TrackLinkClickParams extends TrackBaseParams {
-  componentName: string,
-  isInternalDestination: boolean,
+  componentName: string;
+  isInternalDestination: boolean;
   href: string;
   linkTitle: string;
 }
@@ -43,19 +58,25 @@ export interface TrackAnchorLinkParams extends TrackBaseParams {
 export interface TrackMapInteractionParams extends TrackBaseParams {
   clickText: string;
   clickUrl?: string;
-  action: 'checkboxClickOn' | 'checkboxClickOff' | 'radioButtonClick' | 'pinClick' | 'detailOverlayClick' | 'closeOverlayClick'
+  action:
+    | "checkboxClickOn"
+    | "checkboxClickOff"
+    | "radioButtonClick"
+    | "pinClick"
+    | "detailOverlayClick"
+    | "closeOverlayClick";
 }
 
 export interface TrackVisibilityParams extends TrackBaseParams {
-  action : 'getoond' | 'verborgen',
-  nameOfElementBecameVisible : string,
+  action: "getoond" | "verborgen";
+  nameOfElementBecameVisible: string;
 }
 
 export interface TrackSiteSearchParams extends TrackBaseParams {
   keyword: string;
   searchMachine: string;
   count?: number;
-  type: 'autocomplete' | 'manueel';
+  type: "autocomplete" | "manueel";
 }
 
 export interface TrackSiteSearchResultClickParams extends TrackBaseParams {
@@ -68,7 +89,7 @@ export interface TrackSiteSearchResultClickParams extends TrackBaseParams {
   };
   amountOfResults: number; // aantal zoekresultaten op het moment
   amountOfResultsShown: number; // hoeveel zoekresultaten had de gebruiker beschikbaar om te kiezen
-  type: 'autocomplete' | 'manueel'; // heeft iemand het zoekresultaat helemaal zelf getypt of via Autocomplete aangeklikt
+  type: "autocomplete" | "manueel"; // heeft iemand het zoekresultaat helemaal zelf getypt of via Autocomplete aangeklikt
 }
 
 export interface TrackDownloadParams extends TrackBaseParams {

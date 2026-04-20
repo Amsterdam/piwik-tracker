@@ -1,5 +1,5 @@
-import { useCallback, useContext } from 'react';
-import PiwikContext from './PiwikContext';
+import { useCallback, useContext } from "react";
+import PiwikContext from "./PiwikContext";
 import {
   TrackDownloadParams,
   TrackLinkParams,
@@ -10,68 +10,73 @@ import {
   type TrackMapInteractionParams,
   type TrackSiteSearchResultClickParams,
   type TrackVisibilityParams,
-} from './types';
-import useOutboundClickListener from './utils/useOutboundClickListener';
+} from "./types";
+import useOutboundClickListener from "./utils/useOutboundClickListener";
 
 function usePiwik() {
   const instance = useContext(PiwikContext);
 
   const trackPageView = useCallback(
     (params: TrackPageViewParams) => instance?.trackPageView(params),
-    [instance]
+    [instance],
   );
 
   const trackLink = useCallback(
     (params: TrackLinkParams) => instance?.trackLink(params),
-    [instance]
+    [instance],
   );
 
   const trackLinkClick = useCallback(
     (params: TrackLinkClickParams) => instance?.trackLinkClick(params),
-    [instance]
+    [instance],
   );
 
   const trackAnchorLink = useCallback(
     (params: TrackAnchorLinkParams) => instance?.trackAnchorLink(params),
-    [instance]
+    [instance],
   );
 
   const trackSiteSearch = useCallback(
     (params: TrackSiteSearchParams) => instance?.trackSiteSearch(params),
-    [instance]
+    [instance],
   );
 
   const trackSiteSearchResultClick = useCallback(
-    (params: TrackSiteSearchResultClickParams) => instance?.trackSiteSearchResultClick(params),
-    [instance]
+    (params: TrackSiteSearchResultClickParams) =>
+      instance?.trackSiteSearchResultClick(params),
+    [instance],
   );
 
   const trackDownload = useCallback(
     (params: TrackDownloadParams) => instance?.trackDownload(params),
-    [instance]
+    [instance],
   );
-  
+
   const trackMapInteraction = useCallback(
-    (params: TrackMapInteractionParams) => instance?.trackMapInteraction(params),
-    [instance]
+    (params: TrackMapInteractionParams) =>
+      instance?.trackMapInteraction(params),
+    [instance],
   );
 
   const trackVisibility = useCallback(
     (params: TrackVisibilityParams) => instance?.trackVisibility(params),
-    [instance]
+    [instance],
   );
 
-  const enableLinkTracking = useCallback((internalBaseDomain?: string) => {
-    if (instance) {
-      useOutboundClickListener(instance, internalBaseDomain);
-    }
-  }, [instance]);
+  const enableLinkTracking = useCallback(
+    (internalBaseDomain?: string) => {
+      if (instance) {
+        useOutboundClickListener(instance, internalBaseDomain);
+      }
+    },
+    [instance],
+  );
 
   const pushInstruction = useCallback(
     (name: string, ...args: any[]) => {
       instance?.pushInstruction(name, ...args);
     },
-    [instance]
+    [instance],
   );
 
   return {
