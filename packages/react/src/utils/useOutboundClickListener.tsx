@@ -66,9 +66,13 @@ const useOutboundClickListener = (
       window.setTimeout(navigate, 300);
 
       const targetBaseDomain = extractBaseDomain(targetUrl.hostname);
-      const sourceBaseDomains = internalBaseDomains || [window.location.hostname];
+      const sourceBaseDomains = internalBaseDomains || [
+        window.location.hostname,
+      ];
 
-      const isInternalDestination = !!sourceBaseDomains.find((sourceBaseDomain) => targetBaseDomain === sourceBaseDomain);
+      const isInternalDestination = !!sourceBaseDomains.find(
+        (sourceBaseDomain) => targetBaseDomain === sourceBaseDomain,
+      );
 
       instance.trackLinkClick({
         componentName: "otherLinks",

@@ -5,11 +5,11 @@ import type {
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
-   TrackAnchorLinkParams,
-   TrackLinkClickParams,
-   TrackMapInteractionParams,
-   TrackSiteSearchResultClickParams,
-   TrackVisibilityParams,
+  TrackAnchorLinkParams,
+  TrackLinkClickParams,
+  TrackMapInteractionParams,
+  TrackSiteSearchResultClickParams,
+  TrackVisibilityParams,
 } from "./types";
 import useOutboundClickListener from "./utils/useOutboundClickListener";
 
@@ -17,8 +17,7 @@ function usePiwik() {
   const instance = useContext(PiwikContext);
 
   const trackPageView = useCallback(
-    (params: TrackPageViewParams) =>
-      instance?.trackPageView(params),
+    (params: TrackPageViewParams) => instance?.trackPageView(params),
     [instance],
   );
 

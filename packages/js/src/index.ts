@@ -1,9 +1,9 @@
 import { PiwikTracker } from "./PiwikTracker";
 
 declare global {
-    interface Window {
-        _paq: any[];
-    }
+  interface Window {
+    _paq: any[];
+  }
 }
 
 export { PiwikTracker } from "./PiwikTracker";
@@ -11,7 +11,7 @@ export { PiwikTracker } from "./PiwikTracker";
 /**
  * @deprecated Default export is deprecated. Use named export instead: `import { PiwikTracker } from "@amsterdam/piwik-tracker-js";`
  */
-export default PiwikTracker
+export default PiwikTracker;
 
 export * from "./types";
 

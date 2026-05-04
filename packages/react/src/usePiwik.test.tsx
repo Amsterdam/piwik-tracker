@@ -1,7 +1,7 @@
 import React from "react";
 import { fireEvent, render, renderHook } from "@testing-library/react";
 import { PiwikTracker } from "@amsterdam/piwik-tracker";
-import { createInstance} from "./instance";
+import { createInstance } from "./instance";
 import { PiwikProvider } from "./PiwikProvider";
 import { usePiwik } from "./usePiwik";
 
