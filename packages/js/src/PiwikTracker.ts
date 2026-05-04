@@ -373,4 +373,4 @@ class PiwikTracker {
   }
 }
 
-export default PiwikTracker;
+export { PiwikTracker };

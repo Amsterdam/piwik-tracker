@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { PiwikInstance } from "../types";
+import { PiwikTracker } from "../types";
 
 // This only works for single-part top-level domains like .nl and .com
 // and not for multi-part top-level domains like .co.uk
@@ -13,7 +13,7 @@ const extractBaseDomain = (hostname: string): string | null => {
 };
 
 const useOutboundClickListener = (
-  instance: PiwikInstance,
+  instance: PiwikTracker,
   internalBaseDomains?: string[],
 ): void => {
   const handleOutboundClick = (event: MouseEvent) => {

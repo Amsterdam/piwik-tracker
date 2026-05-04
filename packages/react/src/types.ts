@@ -1,41 +1,10 @@
-import PiwikTracker, { types } from "@amsterdam/piwik-tracker";
+import type { PiwikTracker, UserOptions } from "@amsterdam/piwik-tracker";
 
-export interface PiwikInstance {
-  trackPageView: PiwikTracker["trackPageView"];
-  trackLink: PiwikTracker["trackLink"];
-  trackLinkClick: PiwikTracker["trackLinkClick"];
-  trackAnchorLink: PiwikTracker["trackAnchorLink"];
-  trackSiteSearch: PiwikTracker["trackSiteSearch"];
-  trackSiteSearchResultClick: PiwikTracker["trackSiteSearchResultClick"];
-  trackDownload: PiwikTracker["trackDownload"];
-  trackMapInteraction: PiwikTracker["trackMapInteraction"];
-  trackVisibility: PiwikTracker["trackVisibility"];
-  pushInstruction: PiwikTracker["pushInstruction"];
-}
+export * from "@amsterdam/piwik-tracker";
 
-export type InstanceParams = types.UserOptions;
+export type PiwikInstance = InstanceType<typeof PiwikTracker>;
 
-export type UrlTransformer = types.UrlTransformer;
-
-export type UrlTransformMethod = types.UrlTransformMethod;
-
-export type UrlTransformMeta = types.UrlTransformMeta;
-
-export type TrackPageViewParams = types.TrackPageViewParams;
-
-export type TrackLinkParams = types.TrackLinkParams;
-
-export type TrackLinkClickParams = types.TrackLinkClickParams;
-
-export type TrackAnchorLinkParams = types.TrackAnchorLinkParams;
-
-export type TrackSiteSearchParams = types.TrackSiteSearchParams;
-
-export type TrackSiteSearchResultClickParams =
-  types.TrackSiteSearchResultClickParams;
-
-export type TrackDownloadParams = types.TrackDownloadParams;
-
-export type TrackMapInteractionParams = types.TrackMapInteractionParams;
-
-export type TrackVisibilityParams = types.TrackVisibilityParams;
+/**
+ * @deprecated Use `UserOptions` instead. The `InstanceParams` type will be removed in a future release.
+ */
+export type InstanceParams = UserOptions;

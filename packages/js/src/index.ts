@@ -1,14 +1,23 @@
-import PiwikTracker from "./PiwikTracker";
-import * as types from "./types";
+import { PiwikTracker } from "./PiwikTracker";
 
 declare global {
-  interface Window {
-    _paq: any[];
-  }
+    interface Window {
+        _paq: any[];
+    }
 }
 
-export default PiwikTracker;
+export { PiwikTracker } from "./PiwikTracker";
 
-export { types };
+/**
+ * @deprecated Default export is deprecated. Use named export instead: `import { PiwikTracker } from "@amsterdam/piwik-tracker-js";`
+ */
+export default PiwikTracker
+
+export * from "./types";
+
+/**
+ * @deprecated The types export is deprecated. Types are exported directly at top-level
+ */
+export type * as types from "./types";
 
 export { urlTransformers } from "./urlTransformers";

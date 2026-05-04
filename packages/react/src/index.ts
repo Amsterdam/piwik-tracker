@@ -1,7 +1,5 @@
 export * from "./types";
-export { default as PiwikContext } from "./PiwikContext";
-export { default as PiwikProvider } from "./PiwikProvider";
-export { default as createInstance } from "./instance";
-export { default as usePiwik } from "./usePiwik";
-
-export { urlTransformers } from "@amsterdam/piwik-tracker";
+export { PiwikContext } from "./PiwikContext";
+export { PiwikProvider } from "./PiwikProvider";
+export { createInstance } from "./instance";
+export { usePiwik } from "./usePiwik";

@@ -1,4 +1,4 @@
-import PiwikTracker from "./PiwikTracker";
+import { PiwikTracker } from "./PiwikTracker";
 import { UserOptions } from "./types";
 import { urlTransformers } from "./urlTransformers";
 
