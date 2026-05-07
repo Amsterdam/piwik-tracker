@@ -17,7 +17,7 @@ Before you're able to use this Piwik Pro Tracker you need to initialize Piwik wi
 **Initialize:**
 
 ```ts
-import PiwikTracker, { urlTransformers } from '@amsterdam/piwik-tracker'
+import { PiwikTracker, urlTransformers } from '@amsterdam/piwik-tracker'
 
 const tracker = new PiwikTracker({
   urlBase: 'https://LINK.TO.DOMAIN',
@@ -35,7 +35,7 @@ const tracker = new PiwikTracker({
 After initialization you can use the Piwik Tracker to track events and page views like this:
 
 ```ts
-import PiwikTracker from '@amsterdam/piwik-tracker'
+import { PiwikTracker } from '@amsterdam/piwik-tracker'
 
 const tracker = new PiwikTracker({
   /* setup */
@@ -64,7 +64,7 @@ If you need different behavior you can provide your own transformer.
 Next to the tracking of events, this project also supports tracking site searches:
 
 ```ts
-import PiwikTracker from '@amsterdam/piwik-tracker'
+import { PiwikTracker } from '@amsterdam/piwik-tracker'
 
 const tracker = new PiwikTracker({
   /* setup */

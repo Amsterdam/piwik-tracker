@@ -1,10 +1,10 @@
 import React from "react";
-import PiwikContext from "./PiwikContext";
-import { PiwikInstance } from "./types";
+import { PiwikContext } from "./PiwikContext";
+import { PiwikTracker } from "./types";
 
 export interface PiwikProviderProps {
   children?: React.ReactNode;
-  value: PiwikInstance;
+  value: PiwikTracker;
 }
 
 function PiwikProvider({ children, value }: PiwikProviderProps) {
@@ -13,4 +13,4 @@ function PiwikProvider({ children, value }: PiwikProviderProps) {
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
-export default PiwikProvider;
+export { PiwikProvider };

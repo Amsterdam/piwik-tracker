@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { PiwikInstance } from "../types";
+import { PiwikTracker } from "../types";
 
 // This only works for single-part top-level domains like .nl and .com
 // and not for multi-part top-level domains like .co.uk
@@ -13,8 +13,8 @@ const extractBaseDomain = (hostname: string): string | null => {
 };
 
 const useOutboundClickListener = (
-  instance: PiwikInstance,
-  internalBaseDomain?: string,
+  instance: PiwikTracker,
+  internalBaseDomains?: string[],
 ): void => {
   const handleOutboundClick = (event: MouseEvent) => {
     // The target is not guaranteed to be a link, it could be a child element.
@@ -66,12 +66,19 @@ const useOutboundClickListener = (
       window.setTimeout(navigate, 300);
 
       const targetBaseDomain = extractBaseDomain(targetUrl.hostname);
-      const sourceBaseDomain = internalBaseDomain || window.location.hostname;
+      const sourceBaseDomains = internalBaseDomains || [
+        window.location.hostname,
+      ];
+
+      const isInternalDestination = !!sourceBaseDomains.find(
+        (sourceBaseDomain) => targetBaseDomain === sourceBaseDomain,
+      );
+
       instance.trackLinkClick({
         componentName: "otherLinks",
         href: target.href,
         linkTitle: target.innerText,
-        isInternalDestination: targetBaseDomain === sourceBaseDomain,
+        isInternalDestination,
       });
     }
   };
@@ -85,7 +92,7 @@ const useOutboundClickListener = (
       window.document.removeEventListener("click", handleOutboundClick, {
         capture: true,
       });
-  }, [instance, internalBaseDomain]);
+  }, [instance, internalBaseDomains]);
 };
 
 export const forTesting = {

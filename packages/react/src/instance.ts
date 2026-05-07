@@ -1,8 +1,7 @@
-import PiwikTracker from "@amsterdam/piwik-tracker";
-import { InstanceParams } from "./types";
+import { PiwikTracker, type UserOptions } from "@amsterdam/piwik-tracker";
 
-function createInstance(params: InstanceParams): PiwikTracker {
+function createInstance(params: UserOptions): PiwikTracker {
   return new PiwikTracker(params);
 }
 
-export default createInstance;
+export { createInstance };

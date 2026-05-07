@@ -1,15 +1,15 @@
 import { useCallback, useContext } from "react";
-import PiwikContext from "./PiwikContext";
-import {
+import { PiwikContext } from "./PiwikContext";
+import type {
   TrackDownloadParams,
   TrackLinkParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
-  type TrackAnchorLinkParams,
-  type TrackLinkClickParams,
-  type TrackMapInteractionParams,
-  type TrackSiteSearchResultClickParams,
-  type TrackVisibilityParams,
+  TrackAnchorLinkParams,
+  TrackLinkClickParams,
+  TrackMapInteractionParams,
+  TrackSiteSearchResultClickParams,
+  TrackVisibilityParams,
 } from "./types";
 import useOutboundClickListener from "./utils/useOutboundClickListener";
 
@@ -64,9 +64,9 @@ function usePiwik() {
   );
 
   const enableLinkTracking = useCallback(
-    (internalBaseDomain?: string) => {
+    (internalBaseDomains?: string[]) => {
       if (instance) {
-        useOutboundClickListener(instance, internalBaseDomain);
+        useOutboundClickListener(instance, internalBaseDomains);
       }
     },
     [instance],
@@ -94,4 +94,4 @@ function usePiwik() {
   };
 }
 
-export default usePiwik;
+export { usePiwik };

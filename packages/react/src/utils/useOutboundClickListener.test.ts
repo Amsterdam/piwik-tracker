@@ -8,7 +8,7 @@ import { jest } from "@jest/globals";
 import { renderHook } from "@testing-library/react";
 import { forTesting } from "./useOutboundClickListener";
 import useOutboundClickListener from "./useOutboundClickListener";
-import type { PiwikInstance } from "../types";
+import type { PiwikTracker } from "../types";
 
 describe("extractBaseDomain", () => {
   it("should return null for invalid inputs", () => {
@@ -37,10 +37,10 @@ describe("extractBaseDomain", () => {
 });
 
 describe("useOutboundClickListener (internal/external detection)", () => {
-  const makeInstance = (): PiwikInstance =>
+  const makeInstance = (): PiwikTracker =>
     ({
       trackLinkClick: jest.fn(),
-    }) as unknown as PiwikInstance;
+    }) as unknown as PiwikTracker;
 
   const clickLink = (targetUrl: string) => {
     const link = document.createElement("a");
@@ -77,7 +77,7 @@ describe("useOutboundClickListener (internal/external detection)", () => {
     expect(instance.trackLinkClick).not.toHaveBeenCalled();
   });
 
-  it("tracks external links and marks them external when internalBaseDomain is not set", () => {
+  it("tracks external links and marks them external when internalBaseDomains is not set", () => {
     const instance = makeInstance();
     renderHook(() => useOutboundClickListener(instance));
 
@@ -91,7 +91,7 @@ describe("useOutboundClickListener (internal/external detection)", () => {
     );
   });
 
-  it("tracks cross-subdomain links and marks them external when internalBaseDomain is not set", () => {
+  it("tracks cross-subdomain links and marks them external when internalBaseDomains is not set", () => {
     const instance = makeInstance();
     renderHook(() => useOutboundClickListener(instance));
 
@@ -105,11 +105,11 @@ describe("useOutboundClickListener (internal/external detection)", () => {
     );
   });
 
-  it("tracks cross-subdomain links and marks them internal when internalBaseDomain matches", () => {
+  it("tracks cross-subdomain links and marks them internal when internalBaseDomains contains the target base domain", () => {
     const instance = makeInstance();
-    renderHook(() => useOutboundClickListener(instance, "example.com"));
+    renderHook(() => useOutboundClickListener(instance, ["example.nl"]));
 
-    clickLink("https://other.example.com/another");
+    clickLink("https://other.example.nl/another");
 
     expect(instance.trackLinkClick).toHaveBeenCalledTimes(1);
     expect(instance.trackLinkClick).toHaveBeenCalledWith(
@@ -119,9 +119,9 @@ describe("useOutboundClickListener (internal/external detection)", () => {
     );
   });
 
-  it("tracks external links and marks them external when internalBaseDomain is set", () => {
+  it("tracks external links and marks them external when internalBaseDomains is set", () => {
     const instance = makeInstance();
-    renderHook(() => useOutboundClickListener(instance, "example.com"));
+    renderHook(() => useOutboundClickListener(instance, ["example.com"]));
 
     clickLink("https://external.com/somewhere");
 
