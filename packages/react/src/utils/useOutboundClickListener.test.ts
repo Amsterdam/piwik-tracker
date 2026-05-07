@@ -105,7 +105,7 @@ describe("useOutboundClickListener (internal/external detection)", () => {
     );
   });
 
-  it("tracks cross-subdomain links and marks them internal when internalBaseDomains matches", () => {
+  it("tracks cross-subdomain links and marks them internal when internalBaseDomains contains the target base domain", () => {
     const instance = makeInstance();
     renderHook(() => useOutboundClickListener(instance, ["example.nl"]));
 

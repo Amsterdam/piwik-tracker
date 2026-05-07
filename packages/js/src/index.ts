@@ -9,7 +9,7 @@ declare global {
 export { PiwikTracker } from "./PiwikTracker";
 
 /**
- * @deprecated Default export is deprecated. Use named export instead: `import { PiwikTracker } from "@amsterdam/piwik-tracker-js";`
+ * @deprecated Default export is deprecated. Use named export instead: `import { PiwikTracker } from "@amsterdam/piwik-tracker";`
  */
 export default PiwikTracker;
 
@@ -18,6 +18,6 @@ export * from "./types";
 /**
  * @deprecated The types export is deprecated. Types are exported directly at top-level
  */
-export type * as types from "./types";
+export * as types from "./types";
 
 export { urlTransformers } from "./urlTransformers";
