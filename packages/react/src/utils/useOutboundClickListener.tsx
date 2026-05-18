@@ -70,9 +70,7 @@ const useOutboundClickListener = (
         window.location.hostname,
       ];
 
-      const isInternalDestination = !!sourceBaseDomains.find(
-        (sourceBaseDomain) => targetBaseDomain === sourceBaseDomain,
-      );
+      const isInternalDestination = sourceBaseDomains.includes(targetBaseDomain);
 
       instance.trackLinkClick({
         componentName: "otherLinks",
