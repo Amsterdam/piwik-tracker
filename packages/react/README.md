@@ -111,11 +111,11 @@ And the `enableLinkTracking()` helper can be used to automatically track outboun
 
 - Only HTTP(S) links are tracked (e.g. `mailto:` and `tel:` are ignored).
 - For outbound navigation, the listener delays navigation briefly (~250ms) so the tracking call can be processed.
-- The optional `internalBaseDomain` string can be used to classify destinations on an organisational level (e.g. treat `subdomain.example.com` and `example.com` as “internal”).
+- The optional `internalBaseDomains` string[] can be used to classify destinations on an organisational level (e.g. treat `example.com`, `example.nl` and all their subdomains as “internal”).
 
 Note: base-domain extraction only works for single-part top-level domains like `.nl` and `.com` (and not for multi-part TLDs like `.co.uk`).
 
 ```javascript
 const { enableLinkTracking } = usePiwik();
-enableLinkTracking('organisationdomain.nl');
+enableLinkTracking(['organisationdomain.nl']);
 ```

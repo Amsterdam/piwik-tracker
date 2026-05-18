@@ -1,5 +1,4 @@
-import PiwikTracker from "./PiwikTracker";
-import * as types from "./types";
+import { PiwikTracker } from "./PiwikTracker";
 
 declare global {
   interface Window {
@@ -7,8 +6,31 @@ declare global {
   }
 }
 
+export { PiwikTracker } from "./PiwikTracker";
+
+/**
+ * @deprecated Default export is deprecated. Use named export instead: `import { PiwikTracker } from "@amsterdam/piwik-tracker";`
+ */
 export default PiwikTracker;
 
-export { types };
+export type {
+  CustomDimension,
+  TrackAnchorLinkParams,
+  TrackDownloadParams,
+  TrackLinkClickParams,
+  TrackLinkParams,
+  TrackMapInteractionParams,
+  TrackPageViewParams,
+  TrackSiteSearchParams,
+  TrackSiteSearchResultClick,
+  TrackSiteSearchResultClickParams,
+  TrackVisibilityParams,
+  UserOptions,
+} from "./types";
+
+/**
+ * @deprecated The types export is deprecated. Types are exported directly at top-level
+ */
+export * as types from "./types";
 
 export { urlTransformers } from "./urlTransformers";

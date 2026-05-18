@@ -92,6 +92,11 @@ export interface TrackSiteSearchResultClickParams extends TrackBaseParams {
   type: "autocomplete" | "manueel"; // heeft iemand het zoekresultaat helemaal zelf getypt of via Autocomplete aangeklikt
 }
 
+/**
+ * @deprecated Use `TrackSiteSearchResultClickParams` instead.
+ */
+export type TrackSiteSearchResultClick = TrackSiteSearchResultClickParams;
+
 export interface TrackDownloadParams extends TrackBaseParams {
   downloadDescription: string; // Het soort (functioneel) document (b.v. jaaropgave, wmo-besluit, vergunning, etc.)
   fileType: string; // Het type document
