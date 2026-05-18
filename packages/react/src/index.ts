@@ -1,4 +1,4 @@
-import type { UserOptions,  PiwikTracker } from "@amsterdam/piwik-tracker";
+import type { UserOptions, PiwikTracker } from "@amsterdam/piwik-tracker";
 
 export type {
   CustomDimension,
