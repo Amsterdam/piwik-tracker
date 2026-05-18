@@ -1,5 +1,8 @@
 import type { UserOptions, PiwikTracker } from "@amsterdam/piwik-tracker";
 
+export { urlTransformers } from "@amsterdam/piwik-tracker";
+export type { PiwikTracker } from "@amsterdam/piwik-tracker";
+
 export type {
   CustomDimension,
   TrackAnchorLinkParams,
@@ -20,9 +23,9 @@ export { PiwikProvider } from "./PiwikProvider";
 export { createInstance } from "./instance";
 export { usePiwik } from "./usePiwik";
 
-
-export { urlTransformers } from "@amsterdam/piwik-tracker";
-
+/**
+ * @deprecated Use `PiwikTracker` instead. The `PiwikInstance` type will be removed in a future release.
+ */
 export type PiwikInstance = PiwikTracker;
 
 /**
