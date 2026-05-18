@@ -1,13 +1,13 @@
 import { useCallback, useContext } from "react";
 import { PiwikContext } from "./PiwikContext";
 import type {
+  TrackAnchorLinkParams,
   TrackDownloadParams,
+  TrackLinkClickParams,
   TrackLinkParams,
+  TrackMapInteractionParams,
   TrackPageViewParams,
   TrackSiteSearchParams,
-  TrackAnchorLinkParams,
-  TrackLinkClickParams,
-  TrackMapInteractionParams,
   TrackSiteSearchResultClickParams,
   TrackVisibilityParams,
 } from "./types";

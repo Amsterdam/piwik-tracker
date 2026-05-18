@@ -13,7 +13,20 @@ export { PiwikTracker } from "./PiwikTracker";
  */
 export default PiwikTracker;
 
-export * from "./types";
+export type {
+  CustomDimension,
+  TrackAnchorLinkParams,
+  TrackDownloadParams,
+  TrackLinkClickParams,
+  TrackLinkParams,
+  TrackMapInteractionParams,
+  TrackPageViewParams,
+  TrackSiteSearchParams,
+  TrackSiteSearchResultClick,
+  TrackSiteSearchResultClickParams,
+  TrackVisibilityParams,
+  UserOptions,
+} from "./types";
 
 /**
  * @deprecated The types export is deprecated. Types are exported directly at top-level
