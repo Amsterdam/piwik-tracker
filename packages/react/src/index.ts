@@ -1,22 +1,7 @@
 import type { UserOptions, PiwikTracker } from "@amsterdam/piwik-tracker";
 
-export { urlTransformers } from "@amsterdam/piwik-tracker";
+export * from "@amsterdam/piwik-tracker";
 export type { PiwikTracker } from "@amsterdam/piwik-tracker";
-
-export type {
-  CustomDimension,
-  TrackAnchorLinkParams,
-  TrackDownloadParams,
-  TrackLinkClickParams,
-  TrackLinkParams,
-  TrackMapInteractionParams,
-  TrackPageViewParams,
-  TrackSiteSearchParams,
-  TrackSiteSearchResultClick,
-  TrackSiteSearchResultClickParams,
-  TrackVisibilityParams,
-  UserOptions,
-} from "./types";
 
 export { PiwikContext } from "./PiwikContext";
 export { PiwikProvider } from "./PiwikProvider";
