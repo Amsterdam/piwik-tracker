@@ -2,3 +2,5 @@ es/
 lib/
 *.d.ts
 node_modules/
+
+/.nx/workspace-data
