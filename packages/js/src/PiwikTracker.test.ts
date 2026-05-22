@@ -264,7 +264,7 @@ describe("PiwikTracker", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: "1",
-        urlTransformer: urlTransformers.redactIdLikePathSegments,
+        urlTransformer: urlTransformers.redactIdLikeSegmentsInUrl,
       });
 
       window.dataLayer = [];
@@ -279,7 +279,7 @@ describe("PiwikTracker", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: "1",
-        urlTransformer: urlTransformers.redactIdLikePathSegments,
+        urlTransformer: urlTransformers.redactIdLikeSegmentsInUrl,
       });
 
       window.dataLayer = [];
@@ -299,7 +299,7 @@ describe("PiwikTracker", () => {
       const piwik = new PiwikTracker({
         urlBase: URL_BASE,
         siteId: "1",
-        urlTransformer: urlTransformers.redactIdLikePathSegments,
+        urlTransformer: urlTransformers.redactIdLikeSegmentsInUrl,
       });
 
       window.dataLayer = [];
