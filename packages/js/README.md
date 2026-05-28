@@ -23,7 +23,7 @@ const tracker = new PiwikTracker({
   urlBase: 'https://LINK.TO.DOMAIN',
   siteId: '3',
   disabled: false, // optional, false by default. Makes all tracking calls no-ops if set to true.
-  urlTransformer: urlTransformers.redactIdLikePathSegments, // optional, transform/mask URLs before they are pushed to `dataLayer`
+  urlTransformer: urlTransformers.redactIdLikeSegmentsInUrl, // optional, transform/mask URLs before they are pushed to `dataLayer`
   heartBeat: {
     // optional, enabled by default
     active: true, // optional, default value: true
@@ -55,7 +55,7 @@ tracker.trackLinkClick({
 
 To mask or normalize URLs before they’re pushed to the `dataLayer`, pass a `urlTransformer` function.
 
-The library exports `urlTransformers.redactIdLikePathSegments`, which masks any URL path segment that contains 3 or more digits (e.g. `/users/123/profile` becomes `/users/**/profile`).
+The library exports `urlTransformers.redactIdLikeSegmentsInUrl`, which masks any URL path segment that contains 3 or more digits (e.g. `/users/123/profile?id=123` becomes `/users/**/profile?id=**`).
 
 If you need different behavior you can provide your own transformer.
 

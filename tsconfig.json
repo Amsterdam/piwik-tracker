@@ -1,17 +1,16 @@
 {
   "compilerOptions": {
     "noLib": false,
-    "module": "commonjs",
+    "module": "nodenext",
     "jsx": "react",
-    "target": "es5",
-    "baseUrl": ".",
+    "target": "es2015",
     "paths": {
-      "@amsterdam/*": ["packages/*/src"]
+      "@amsterdam/*": ["./packages/*/src"]
     },
     "composite": true,
     "sourceMap": true,
     "allowJs": false,
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,

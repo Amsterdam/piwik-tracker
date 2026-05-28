@@ -4,7 +4,7 @@ import { PiwikTracker } from "./types";
 
 export interface PiwikProviderProps {
   children?: React.ReactNode;
-  value: PiwikTracker;
+  value: PiwikTracker | null;
 }
 
 function PiwikProvider({ children, value }: PiwikProviderProps) {

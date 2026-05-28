@@ -1,4 +1,1 @@
-
-
-export * from "@amsterdam/piwik-tracker";
-
+export type * from "@amsterdam/piwik-tracker";

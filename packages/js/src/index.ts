@@ -15,6 +15,7 @@ export default PiwikTracker;
 
 export type {
   CustomDimension,
+  UrlTransformer,
   TrackAnchorLinkParams,
   TrackDownloadParams,
   TrackLinkClickParams,
